@@ -109,13 +109,13 @@ function PageSection({ children, className, id, labelledBy }) {
     target: sectionRef,
     offset: ["start end", "end start"],
   });
-  const opacity = useTransform(scrollYProgress, [0, 0.28, 0.72, 1], [0.16, 1, 1, 0.22]);
-  const y = useTransform(scrollYProgress, [0, 0.28, 0.72, 1], ["18vh", "0vh", "0vh", "-14vh"]);
-  const scale = useTransform(scrollYProgress, [0, 0.28, 0.72, 1], [0.92, 1, 1, 0.94]);
+  const opacity = useTransform(scrollYProgress, [0, 0.28, 0.72, 1], [0.22, 1, 1, 0.3]);
+  const y = useTransform(scrollYProgress, [0, 0.28, 0.72, 1], ["15vh", "0vh", "0vh", "-12vh"]);
+  const scale = useTransform(scrollYProgress, [0, 0.28, 0.72, 1], [0.94, 1, 1, 0.955]);
   const filter = useTransform(
     scrollYProgress,
     [0, 0.28, 0.72, 1],
-    ["blur(22px)", "blur(0px)", "blur(0px)", "blur(18px)"],
+    ["blur(18px)", "blur(0px)", "blur(0px)", "blur(15px)"],
   );
 
   return (
@@ -141,7 +141,7 @@ function Hero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.62, ease: [0.22, 1, 0.36, 1] }}
       >
-        <p className="section-eyebrow">Software-focused Computer Engineering</p>
+        <p className="section-eyebrow">Computer Engineering</p>
         <h1 id="hero-title">Jeffrey Dai</h1>
         <p className="hero-subtitle">
           Bachelor of Computer Engineering student at McGill University.
