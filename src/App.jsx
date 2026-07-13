@@ -1,6 +1,7 @@
 ﻿import "./App.css";
 
-import { motion } from "motion/react";
+import { useRef } from "react";
+import { MotionConfig, motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 
 const hackathonProjects = [
   {
@@ -58,9 +59,38 @@ const cardReveal = {
   transition: { duration: 0.46, ease: [0.22, 1, 0.36, 1] },
 };
 
+function PageSection({ children, className, id, labelledBy }) {
+  const sectionRef = useRef(null);
+  const shouldReduceMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  const opacity = useTransform(scrollYProgress, [0, 0.18, 0.82, 1], [0.42, 1, 1, 0.52]);
+  const y = useTransform(scrollYProgress, [0, 0.18, 0.82, 1], ["7vh", "0vh", "0vh", "-5vh"]);
+  const scale = useTransform(scrollYProgress, [0, 0.18, 0.82, 1], [0.975, 1, 1, 0.985]);
+  const filter = useTransform(
+    scrollYProgress,
+    [0, 0.18, 0.82, 1],
+    ["blur(10px)", "blur(0px)", "blur(0px)", "blur(8px)"],
+  );
+
+  return (
+    <motion.section
+      ref={sectionRef}
+      className={className}
+      id={id}
+      aria-labelledby={labelledBy}
+      style={shouldReduceMotion ? undefined : { opacity, y, scale, filter }}
+    >
+      {children}
+    </motion.section>
+  );
+}
+
 function Hero() {
   return (
-    <section className="hero-section" id="hero" aria-labelledby="hero-title">
+    <PageSection className="hero-section" id="hero" labelledBy="hero-title">
       <motion.div
         className="hero-content"
         initial={{ opacity: 0, y: 24 }}
@@ -108,16 +138,16 @@ function Hero() {
         <span className="circuit-node node-three" />
         <span className="circuit-node node-four" />
       </motion.div>
-    </section>
+    </PageSection>
   );
 }
 
 function ProfessionalExperience() {
   return (
-    <section
+    <PageSection
       className="experience-section"
       id="professional-experience"
-      aria-labelledby="professional-experience-title"
+      labelledBy="professional-experience-title"
     >
       <motion.div className="experience-shell" {...sectionReveal}>
         <div className="experience-heading">
@@ -149,13 +179,13 @@ function ProfessionalExperience() {
           </div>
         </motion.article>
       </motion.div>
-    </section>
+    </PageSection>
   );
 }
 
 function FeaturedProjects() {
   return (
-    <section className="projects-section" id="featured-projects" aria-labelledby="projects-title">
+    <PageSection className="projects-section" id="featured-projects" labelledBy="projects-title">
       <motion.div className="projects-shell" {...sectionReveal}>
         <div className="projects-heading">
           <p className="section-eyebrow">Featured Projects</p>
@@ -227,16 +257,16 @@ function FeaturedProjects() {
           </motion.section>
         </div>
       </motion.div>
-    </section>
+    </PageSection>
   );
 }
 
 function CompetitiveRobotics() {
   return (
-    <section
+    <PageSection
       className="robotics-section"
       id="competitive-robotics"
-      aria-labelledby="robotics-title"
+      labelledBy="robotics-title"
     >
       <motion.div className="robotics-shell" {...sectionReveal}>
         <div className="robotics-heading">
@@ -277,13 +307,13 @@ function CompetitiveRobotics() {
           </div>
         </motion.div>
       </motion.div>
-    </section>
+    </PageSection>
   );
 }
 
 function AboutLeadership() {
   return (
-    <section className="about-section" id="about-leadership" aria-labelledby="about-title">
+    <PageSection className="about-section" id="about-leadership" labelledBy="about-title">
       <motion.div className="about-shell" {...sectionReveal}>
         <div className="about-heading">
           <p className="section-eyebrow">About Me & Leadership</p>
@@ -332,13 +362,13 @@ function AboutLeadership() {
           </p>
         </motion.article>
       </motion.div>
-    </section>
+    </PageSection>
   );
 }
 
 function App() {
   return (
-    <>
+    <MotionConfig reducedMotion="user">
       <header className="site-header">
         <a className="brand-link" href="#hero" aria-label="Jeffrey Dai portfolio home">
           Jeffrey Dai
@@ -361,7 +391,7 @@ function App() {
         <CompetitiveRobotics />
         <AboutLeadership />
       </main>
-    </>
+    </MotionConfig>
   );
 }
 

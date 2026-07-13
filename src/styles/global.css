@@ -4,6 +4,8 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 72px;
+  scroll-snap-type: y proximity;
 }
 
 body {
@@ -31,7 +33,17 @@ button:focus-visible {
   outline-offset: 4px;
 }
 
+@media (max-width: 760px) {
+  html {
+    scroll-padding-top: 118px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-snap-type: none;
+  }
+
   *,
   *::before,
   *::after {
