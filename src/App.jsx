@@ -1,5 +1,7 @@
 ﻿import "./App.css";
 
+import { motion } from "motion/react";
+
 const hackathonProjects = [
   {
     name: "Code Jam 15",
@@ -42,10 +44,29 @@ const roboticsSkills = ["CAD", "3D printing", "Hand tools", "Power tools"];
 
 const chemECarSkills = ["PCB board design", "PCB soldering", "Motors", "Circuits"];
 
+const sectionReveal = {
+  initial: { opacity: 0, y: 28 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, amount: 0.18 },
+  transition: { duration: 0.58, ease: [0.22, 1, 0.36, 1] },
+};
+
+const cardReveal = {
+  initial: { opacity: 0, y: 18 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, amount: 0.2 },
+  transition: { duration: 0.46, ease: [0.22, 1, 0.36, 1] },
+};
+
 function Hero() {
   return (
     <section className="hero-section" id="hero" aria-labelledby="hero-title">
-      <div className="hero-content">
+      <motion.div
+        className="hero-content"
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.62, ease: [0.22, 1, 0.36, 1] }}
+      >
         <p className="section-eyebrow">Software-focused Computer Engineering</p>
         <h1 id="hero-title">Jeffrey Dai</h1>
         <p className="hero-subtitle">
@@ -65,12 +86,28 @@ function Hero() {
             LinkedIn
           </a>
         </div>
-      </div>
-      <div className="hero-circuit" aria-hidden="true">
+      </motion.div>
+      <motion.div
+        className="hero-circuit"
+        aria-hidden="true"
+        initial={{ opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
+      >
+        <div className="lock-mark">
+          <span className="lock-shackle" />
+          <span className="lock-body">
+            <span className="lock-keyhole" />
+          </span>
+        </div>
+        <span className="circuit-trace trace-one" />
+        <span className="circuit-trace trace-two" />
+        <span className="circuit-trace trace-three" />
         <span className="circuit-node node-one" />
         <span className="circuit-node node-two" />
         <span className="circuit-node node-three" />
-      </div>
+        <span className="circuit-node node-four" />
+      </motion.div>
     </section>
   );
 }
@@ -82,16 +119,21 @@ function ProfessionalExperience() {
       id="professional-experience"
       aria-labelledby="professional-experience-title"
     >
-      <div className="experience-shell">
+      <motion.div className="experience-shell" {...sectionReveal}>
         <div className="experience-heading">
           <p className="section-eyebrow">Professional Experience</p>
           <h2 id="professional-experience-title">Canada Revenue Agency</h2>
         </div>
 
-        <article className="experience-card" aria-label="CRA internship">
+        <motion.article className="experience-card" aria-label="CRA internship" {...cardReveal}>
           <div className="experience-meta">
             <p className="experience-label">4-month internship</p>
             <h3>Enterprise Fraud Management Information Technology Branch</h3>
+            <div className="meta-chip-row" aria-label="Public experience keywords">
+              <span>XML</span>
+              <span>Java</span>
+              <span>Enterprise environment</span>
+            </div>
           </div>
           <div className="experience-copy">
             <p>
@@ -105,8 +147,8 @@ function ProfessionalExperience() {
               real-world systems.
             </p>
           </div>
-        </article>
-      </div>
+        </motion.article>
+      </motion.div>
     </section>
   );
 }
@@ -114,13 +156,13 @@ function ProfessionalExperience() {
 function FeaturedProjects() {
   return (
     <section className="projects-section" id="featured-projects" aria-labelledby="projects-title">
-      <div className="projects-shell">
+      <motion.div className="projects-shell" {...sectionReveal}>
         <div className="projects-heading">
           <p className="section-eyebrow">Featured Projects</p>
           <h2 id="projects-title">Software and hackathon builds</h2>
         </div>
 
-        <article className="dishly-card" aria-label="Dishly Recipe Match project">
+        <motion.article className="dishly-card" aria-label="Dishly Recipe Match project" {...cardReveal}>
           <div className="dishly-card-main">
             <p className="project-label">Lead project - CUhacking, 36 hours</p>
             <h3>Dishly Recipe Match</h3>
@@ -144,7 +186,7 @@ function FeaturedProjects() {
               <span key={item}>{item}</span>
             ))}
           </div>
-        </article>
+        </motion.article>
 
         <div className="project-subsections">
           <section className="compact-block" aria-labelledby="hackathon-grid-title">
@@ -154,7 +196,7 @@ function FeaturedProjects() {
             </div>
             <div className="hackathon-grid">
               {hackathonProjects.map((project) => (
-                <article className="hackathon-card" key={project.name}>
+                <motion.article className="hackathon-card" key={project.name} {...cardReveal}>
                   <p className="project-context">{project.context}</p>
                   <h4>{project.name}</h4>
                   <p>{project.description}</p>
@@ -163,12 +205,16 @@ function FeaturedProjects() {
                       GitHub
                     </a>
                   ) : null}
-                </article>
+                </motion.article>
               ))}
             </div>
           </section>
 
-          <section className="compact-block hardware-block" aria-labelledby="hardware-builds-title">
+          <motion.section
+            className="compact-block hardware-block"
+            aria-labelledby="hardware-builds-title"
+            {...cardReveal}
+          >
             <div className="compact-heading">
               <p className="project-label">Hardware builds</p>
               <h3 id="hardware-builds-title">Secondary engineering builds</h3>
@@ -178,9 +224,9 @@ function FeaturedProjects() {
                 <li key={build}>{build}</li>
               ))}
             </ul>
-          </section>
+          </motion.section>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
@@ -192,14 +238,14 @@ function CompetitiveRobotics() {
       id="competitive-robotics"
       aria-labelledby="robotics-title"
     >
-      <div className="robotics-shell">
+      <motion.div className="robotics-shell" {...sectionReveal}>
         <div className="robotics-heading">
           <p className="section-eyebrow">Competitive Robotics</p>
           <h2 id="robotics-title">FIRST Robotics Team 8729, "Sparkling H2O"</h2>
         </div>
 
         <div className="robotics-layout">
-          <article className="robotics-main-card">
+          <motion.article className="robotics-main-card" {...cardReveal}>
             <p className="project-label">2022-2025</p>
             <h3>Competition execution under pressure</h3>
             <p>
@@ -211,26 +257,26 @@ function CompetitiveRobotics() {
               He also gained experience leading small sub-teams, pairing competition-day execution
               with hands-on engineering delivery.
             </p>
-          </article>
+          </motion.article>
 
           <aside className="robotics-results" aria-label="Robotics highlights">
             {roboticsHighlights.map((highlight) => (
-              <div className="robotics-result" key={highlight}>
+              <motion.div className="robotics-result" key={highlight} {...cardReveal}>
                 {highlight}
-              </div>
+              </motion.div>
             ))}
           </aside>
         </div>
 
-        <div className="robotics-supporting" aria-label="Supporting mechanical skills">
+        <motion.div className="robotics-supporting" aria-label="Supporting mechanical skills" {...cardReveal}>
           <p className="project-label">Supporting engineering skills</p>
           <div className="robotics-skill-list">
             {roboticsSkills.map((skill) => (
               <span key={skill}>{skill}</span>
             ))}
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }
@@ -238,14 +284,14 @@ function CompetitiveRobotics() {
 function AboutLeadership() {
   return (
     <section className="about-section" id="about-leadership" aria-labelledby="about-title">
-      <div className="about-shell">
+      <motion.div className="about-shell" {...sectionReveal}>
         <div className="about-heading">
           <p className="section-eyebrow">About Me & Leadership</p>
           <h2 id="about-title">Leadership, systems thinking, and builder habits</h2>
         </div>
 
         <div className="about-grid">
-          <article className="leadership-card primary-leadership-card">
+          <motion.article className="leadership-card primary-leadership-card" {...cardReveal}>
             <p className="project-label">2025-present</p>
             <h3>McHacks Experience Team Lead</h3>
             <p>
@@ -262,9 +308,9 @@ function AboutLeadership() {
                 team socials, and helped review McHacks applications.
               </li>
             </ul>
-          </article>
+          </motion.article>
 
-          <article className="leadership-card chem-card">
+          <motion.article className="leadership-card chem-card" {...cardReveal}>
             <p className="project-label">2025-present</p>
             <h3>McGill Chem-E Car</h3>
             <p>Electrical sub-team member.</p>
@@ -273,10 +319,10 @@ function AboutLeadership() {
                 <span key={skill}>{skill}</span>
               ))}
             </div>
-          </article>
+          </motion.article>
         </div>
 
-        <article className="mindset-card">
+        <motion.article className="mindset-card" {...cardReveal}>
           <p className="project-label">The Engineer's Mindset</p>
           <h3>Measured, iterative, and a little optimization-minded.</h3>
           <p>
@@ -284,8 +330,8 @@ function AboutLeadership() {
             fitness macronutrients with a data-driven approach and designing highly optimized,
             automated resource systems in Minecraft.
           </p>
-        </article>
-      </div>
+        </motion.article>
+      </motion.div>
     </section>
   );
 }
