@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Jeffrey Dai portfolio preview placeholder</title>
+  <desc id="desc">Open Graph placeholder image for Jeffrey Dai's portfolio.</desc>
+  <rect width="1200" height="630" fill="#0b1020"/>
+  <path d="M0 120h1200M0 240h1200M0 360h1200M0 480h1200M160 0v630M320 0v630M480 0v630M640 0v630M800 0v630M960 0v630" stroke="#1f7a8c" stroke-opacity="0.24" stroke-width="2"/>
+  <rect x="92" y="112" width="1016" height="406" fill="#f7fafc"/>
+  <rect x="92" y="112" width="84" height="8" fill="#e6b44c"/>
+  <text x="150" y="286" fill="#0b1020" font-family="Inter, Segoe UI, sans-serif" font-size="82" font-weight="800">Jeffrey Dai</text>
+  <text x="154" y="360" fill="#1f7a8c" font-family="IBM Plex Mono, Consolas, monospace" font-size="34" font-weight="700">Computer Engineering Portfolio</text>
+  <text x="154" y="426" fill="#536171" font-family="Inter, Segoe UI, sans-serif" font-size="30">Software-focused builder at McGill University</text>
+</svg>
