@@ -1,4 +1,4 @@
-﻿import "./App.css";
+import "./App.css";
 
 import { useRef } from "react";
 import { MotionConfig, motion, useReducedMotion, useScroll, useTransform } from "motion/react";
@@ -59,6 +59,49 @@ const cardReveal = {
   transition: { duration: 0.46, ease: [0.22, 1, 0.36, 1] },
 };
 
+function PcbBackground({ isFixed = false }) {
+  const shouldReduceMotion = useReducedMotion();
+
+  const baseStyle = {
+    position: isFixed ? "fixed" : "absolute",
+    inset: 0,
+    zIndex: isFixed ? -1 : 0,
+    pointerEvents: "none",
+    backgroundImage: `url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='%23ffb000' stroke-width='1.5' fill='none'%3E%3Cpath d='M 0 50 h 30 l 20 20 v 30 l -10 10 h -40'/%3E%3Ccircle cx='0' cy='110' r='2' fill='%23ffb000'/%3E%3Ccircle cx='50' cy='50' r='2' fill='%23ffb000'/%3E%3Cpath d='M 100 0 v 40 l 20 20 h 50 l 10 -10 v -50'/%3E%3Ccircle cx='100' cy='40' r='2' fill='%23ffb000'/%3E%3Cpath d='M 150 200 v -30 l -20 -20 h -40 l -20 20 v 30'/%3E%3Ccircle cx='150' cy='170' r='2' fill='%23ffb000'/%3E%3Ccircle cx='70' cy='170' r='2' fill='%23ffb000'/%3E%3Cpath d='M 200 120 h -40 l -20 -20 v -20 l 20 -20 h 40'/%3E%3Ccircle cx='140' cy='100' r='2' fill='%23ffb000'/%3E%3C/g%3E%3C/svg%3E")`,
+    backgroundSize: "300px 300px",
+    maskImage: isFixed
+      ? "linear-gradient(180deg, #000 0%, transparent 80%)"
+      : "linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.6) 48%, transparent 100%)",
+    opacity: 0.08,
+  };
+
+  if (shouldReduceMotion) {
+    return <div style={baseStyle} aria-hidden="true" />;
+  }
+
+  const animStyle = { ...baseStyle, opacity: undefined };
+
+  return (
+    <motion.div
+      style={animStyle}
+      aria-hidden="true"
+      animate={{
+        opacity: [0.04, 0.24, 0.04],
+        filter: [
+          "drop-shadow(0px 0px 0px rgba(255, 176, 0, 0))",
+          "drop-shadow(0px 0px 10px rgba(255, 176, 0, 0.8))",
+          "drop-shadow(0px 0px 0px rgba(255, 176, 0, 0))",
+        ],
+      }}
+      transition={{
+        repeat: Infinity,
+        duration: 4,
+        ease: "easeInOut",
+      }}
+    />
+  );
+}
+
 function PageSection({ children, className, id, labelledBy }) {
   const sectionRef = useRef(null);
   const shouldReduceMotion = useReducedMotion();
@@ -66,13 +109,13 @@ function PageSection({ children, className, id, labelledBy }) {
     target: sectionRef,
     offset: ["start end", "end start"],
   });
-  const opacity = useTransform(scrollYProgress, [0, 0.18, 0.82, 1], [0.42, 1, 1, 0.52]);
-  const y = useTransform(scrollYProgress, [0, 0.18, 0.82, 1], ["7vh", "0vh", "0vh", "-5vh"]);
-  const scale = useTransform(scrollYProgress, [0, 0.18, 0.82, 1], [0.975, 1, 1, 0.985]);
+  const opacity = useTransform(scrollYProgress, [0, 0.28, 0.72, 1], [0.16, 1, 1, 0.22]);
+  const y = useTransform(scrollYProgress, [0, 0.28, 0.72, 1], ["18vh", "0vh", "0vh", "-14vh"]);
+  const scale = useTransform(scrollYProgress, [0, 0.28, 0.72, 1], [0.92, 1, 1, 0.94]);
   const filter = useTransform(
     scrollYProgress,
-    [0, 0.18, 0.82, 1],
-    ["blur(10px)", "blur(0px)", "blur(0px)", "blur(8px)"],
+    [0, 0.28, 0.72, 1],
+    ["blur(22px)", "blur(0px)", "blur(0px)", "blur(18px)"],
   );
 
   return (
@@ -83,6 +126,7 @@ function PageSection({ children, className, id, labelledBy }) {
       aria-labelledby={labelledBy}
       style={shouldReduceMotion ? undefined : { opacity, y, scale, filter }}
     >
+      <PcbBackground />
       {children}
     </motion.section>
   );
@@ -383,6 +427,8 @@ function App() {
           Resume
         </a>
       </header>
+
+      <PcbBackground isFixed={true} />
 
       <main>
         <Hero />
