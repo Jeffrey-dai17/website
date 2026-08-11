@@ -7,18 +7,24 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "optimize-models": "node scripts/optimize-models.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",
     "motion": "^12.42.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "three": "^0.185.1",
     "vite": "^6.0.5"
   },
   "devDependencies": {
+    "@gltf-transform/core": "^4.4.2",
+    "@gltf-transform/extensions": "^4.4.2",
+    "@gltf-transform/functions": "^4.4.2",
     "eslint": "^9.17.0",
     "eslint-plugin-react": "^7.37.2",
-    "eslint-plugin-react-hooks": "^5.1.0"
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "meshoptimizer": "^1.2.0"
   }
 }

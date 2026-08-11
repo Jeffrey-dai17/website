@@ -1,23 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap");
+
 :root {
-  --color-ink: #0b1020;
-  --color-surface: #ffb000;
-  --color-panel: #07101d;
-  --color-teal: #ffb000;
-  --color-brass: #e6b44c;
-  --color-border: #d7e1ea;
-  --color-muted: #536171;
-  --color-bridge: #4B6584;
+  --color-ink: #000000;
+  --color-soft-ink: #c8beb1;
+  --color-muted: #9d9284;
+  --color-paper: #f4efe6;
+  --color-paper-deep: #191816;
+  --color-line: #5b5044;
+  --color-line-strong: #d2b685;
+  --color-accent: #d13a32;
+  --color-gold: #d2a94c;
 
-  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: "IBM Plex Mono", "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
+  --font-display: "Space Grotesk", "Arial Narrow", Arial, sans-serif;
+  --font-sans: "IBM Plex Sans", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", "Cascadia Mono", Consolas, monospace;
 
-  --content-width: 1120px;
-  --page-gutter: clamp(1rem, 4vw, 3.5rem);
-
+  --page-gutter: 3.5rem;
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
   --space-4: 1rem;
   --space-5: 1.5rem;
-  --space-6: 2rem;
+  --space-6: 2.5rem;
+  --space-7: 5rem;
+  --space-8: 7rem;
+}
+
+@media (max-width: 760px) {
+  :root {
+    --page-gutter: 1.25rem;
+    --space-6: 2rem;
+    --space-7: 3.5rem;
+    --space-8: 4.5rem;
+  }
 }
