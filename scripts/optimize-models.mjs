@@ -12,6 +12,13 @@ const outputDirectory = path.join(projectRoot, "src", "assets", "models");
 
 const models = [
   {
+    input: "jeff 3d.glb",
+    output: "jeff-center.glb",
+    ratio: 0.1,
+    error: 0.003,
+    preserveMaterials: true,
+  },
+  {
     input: "league_of_legends_-_nami_bust.glb",
     output: "nami-center.glb",
     ratio: 1,
@@ -73,7 +80,9 @@ for (const model of selectedModels) {
   const before = countGeometry(document);
 
   stripAnimationData(document);
-  stripSurfaceData(document);
+  if (!model.preserveMaterials) {
+    stripSurfaceData(document);
+  }
 
   const transforms = [
     prune(),

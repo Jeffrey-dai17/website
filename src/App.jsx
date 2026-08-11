@@ -13,17 +13,18 @@ import interestPigModelUrl from "./assets/models/interest-pig.glb?url";
 import interestSushiModelUrl from "./assets/models/interest-sushi.glb?url";
 import interestVolleyballModelUrl from "./assets/models/interest-volleyball.glb?url";
 import jakeSandersonModelUrl from "./assets/models/jake-sanderson.glb?url";
+import jeffModelUrl from "./assets/models/jeff-center.glb?url";
 import linusUllmarkModelUrl from "./assets/models/linus-ullmark.glb?url";
 import marvelCaptainAmericaModelUrl from "./assets/models/marvel-captain-america.glb?url";
 import marvelDeadpoolModelUrl from "./assets/models/marvel-deadpool.glb?url";
 import marvelIronManModelUrl from "./assets/models/marvel-iron-man.glb?url";
 import marvelSpiderManModelUrl from "./assets/models/marvel-spider-man.glb?url";
 import marvelVenomModelUrl from "./assets/models/marvel-venom.glb?url";
-import namiModelUrl from "./assets/models/nami-center.glb?url";
 import thomasChabotModelUrl from "./assets/models/thomas-chabot.glb?url";
 import timStutzleModelUrl from "./assets/models/tim-stutzle.glb?url";
 
 const TAU = Math.PI * 2;
+const JEFF_FRONT_ANGLE = -Math.PI / 2;
 
 const ORBIT_GROUPS = [
   {
@@ -203,12 +204,6 @@ function OrbitalSculpture() {
     warmRimLight.position.set(3.4, -1.8, 2.6);
     scene.add(warmRimLight);
 
-    const centralMaterial = new THREE.MeshStandardMaterial({
-      color: 0x747474,
-      metalness: 0.04,
-      roughness: 0.38,
-    });
-
     const orbiterMaterial = new THREE.MeshStandardMaterial({
       color: 0xffffff,
       metalness: 0.01,
@@ -312,7 +307,8 @@ function OrbitalSculpture() {
 
       centralRig.scale.setScalar(THREE.MathUtils.lerp(0.78, 1, centralReveal));
       centralRig.position.y = THREE.MathUtils.lerp(-0.18, 0, centralReveal);
-      centralRig.rotation.y = staticFrame ? 0 : pointerCurrent.x * 0.07;
+      centralRig.rotation.y =
+        JEFF_FRONT_ANGLE + (staticFrame ? 0 : pointerCurrent.x * 0.07);
       centralRig.rotation.x = staticFrame ? 0 : -pointerCurrent.y * 0.035;
 
       orbitLines.forEach(({ line, revealOrder, targetOpacity }) => {
@@ -383,7 +379,7 @@ function OrbitalSculpture() {
       });
 
     Promise.allSettled([
-      loadModel(namiModelUrl),
+      loadModel(jeffModelUrl),
       ...ORBITING_MODELS.map((model) => loadModel(model.url)),
     ]).then((results) => {
       if (disposed) {
@@ -406,7 +402,6 @@ function OrbitalSculpture() {
         return;
       }
 
-      replaceMaterials(centralResult.value.scene, centralMaterial);
       centralRig = new THREE.Group();
       centralRig.add(centerAndScaleModel(centralResult.value.scene, 3.12));
       sculpture.add(centralRig);
@@ -474,7 +469,7 @@ function OrbitalSculpture() {
         className={`orbital-model orbital-model--${modelState}`}
         ref={modelHostRef}
         role="img"
-        aria-label="Three collections of white 3D sculptures orbiting a central gray League of Legends bust"
+        aria-label="Three collections of white 3D sculptures orbiting a central 3D portrait of Jeffrey"
       />
       {modelState === "loading" ? (
         <p className="orbital-model-status" aria-live="polite">
