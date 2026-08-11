@@ -164,17 +164,6 @@
   background: var(--color-ink);
 }
 
-.image-stage::before {
-  position: absolute;
-  z-index: 0;
-  inset: 8% 12% 7%;
-  border: 1px solid color-mix(in srgb, var(--color-line-strong) 38%, transparent);
-  border-radius: 50%;
-  content: "";
-  pointer-events: none;
-  transform: rotate(-7deg);
-}
-
 .orbital-model {
   position: absolute;
   z-index: 1;
@@ -612,10 +601,6 @@
   .hero-image-block,
   .image-stage {
     min-height: 29rem;
-  }
-
-  .image-stage::before {
-    inset: 9% 8% 6%;
   }
 
   .hero-section h1 {

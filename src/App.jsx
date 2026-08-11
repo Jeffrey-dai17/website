@@ -7,47 +7,88 @@ import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.j
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import cuzzyModelUrl from "./assets/models/cuzzy.glb?url";
 import eklundModelUrl from "./assets/models/eklund.glb?url";
+import interestBmwModelUrl from "./assets/models/interest-bmw.glb?url";
+import interestKeyboardModelUrl from "./assets/models/interest-keyboard.glb?url";
+import interestPigModelUrl from "./assets/models/interest-pig.glb?url";
+import interestSushiModelUrl from "./assets/models/interest-sushi.glb?url";
+import interestVolleyballModelUrl from "./assets/models/interest-volleyball.glb?url";
 import jakeSandersonModelUrl from "./assets/models/jake-sanderson.glb?url";
 import linusUllmarkModelUrl from "./assets/models/linus-ullmark.glb?url";
-import spiderManModelUrl from "./assets/models/spider-man-center.glb?url";
+import marvelCaptainAmericaModelUrl from "./assets/models/marvel-captain-america.glb?url";
+import marvelDeadpoolModelUrl from "./assets/models/marvel-deadpool.glb?url";
+import marvelIronManModelUrl from "./assets/models/marvel-iron-man.glb?url";
+import marvelSpiderManModelUrl from "./assets/models/marvel-spider-man.glb?url";
+import marvelVenomModelUrl from "./assets/models/marvel-venom.glb?url";
+import namiModelUrl from "./assets/models/nami-center.glb?url";
 import thomasChabotModelUrl from "./assets/models/thomas-chabot.glb?url";
 import timStutzleModelUrl from "./assets/models/tim-stutzle.glb?url";
 
-const ORBIT_PATHS = [
+const TAU = Math.PI * 2;
+
+const ORBIT_GROUPS = [
   {
-    radiusX: 2.3,
-    radiusY: 0.78,
-    rotation: [1.05, 0.08, -0.08],
-    speed: 0.19,
+    id: "interest",
+    radiusX: 1.78,
+    radiusY: 0.64,
+    rotation: [1.03, 0.04, -0.1],
+    speed: 0.22,
     color: 0xd2a94c,
-    opacity: 0.38,
+    opacity: 0.34,
+    phaseOffset: 0.18,
+    models: [
+      { name: "BMW X3", url: interestBmwModelUrl, size: 0.66, spin: 0.28, front: 0.2 },
+      { name: "Keyboard", url: interestKeyboardModelUrl, size: 0.56, spin: -0.31, front: 0.1 },
+      { name: "Pig", url: interestPigModelUrl, size: 0.62, spin: 0.36, front: -1.2 },
+      { name: "Sushi", url: interestSushiModelUrl, size: 0.54, spin: -0.3, front: 0 },
+      { name: "Volleyball", url: interestVolleyballModelUrl, size: 0.42, spin: 0.42, front: 0 },
+    ],
   },
   {
-    radiusX: 2.12,
-    radiusY: 1.48,
-    rotation: [0.5, -0.24, 0.72],
-    speed: -0.155,
+    id: "sens",
+    radiusX: 2.58,
+    radiusY: 1.34,
+    rotation: [0.5, -0.22, 0.58],
+    speed: -0.16,
     color: 0xf4efe6,
-    opacity: 0.18,
+    opacity: 0.15,
+    phaseOffset: 0.66,
+    models: [
+      { name: "Tim Stutzle", url: timStutzleModelUrl, size: 0.74, spin: 0.42, front: -1.5 },
+      { name: "Cuzzy", url: cuzzyModelUrl, size: 0.71, spin: -0.39, front: -1.5 },
+      { name: "Eklund", url: eklundModelUrl, size: 0.73, spin: 0.37, front: -1.5 },
+      { name: "Jake Sanderson", url: jakeSandersonModelUrl, size: 0.72, spin: -0.4, front: -1.5 },
+      { name: "Linus Ullmark", url: linusUllmarkModelUrl, size: 0.75, spin: 0.41, front: -1.5 },
+      { name: "Thomas Chabot", url: thomasChabotModelUrl, size: 0.72, spin: -0.36, front: -1.5 },
+    ],
   },
   {
-    radiusX: 2.18,
-    radiusY: 1.42,
-    rotation: [0.46, 0.22, -0.68],
-    speed: 0.14,
+    id: "marvel",
+    radiusX: 3.34,
+    radiusY: 1.86,
+    rotation: [0.48, 0.18, -0.58],
+    speed: 0.12,
     color: 0xd13a32,
-    opacity: 0.27,
+    opacity: 0.22,
+    phaseOffset: 1.12,
+    models: [
+      { name: "Captain America", url: marvelCaptainAmericaModelUrl, size: 0.8, spin: 0.27, front: 0 },
+      { name: "Deadpool", url: marvelDeadpoolModelUrl, size: 0.8, spin: -0.3, front: 0 },
+      { name: "Iron Man", url: marvelIronManModelUrl, size: 0.82, spin: 0.29, front: 0 },
+      { name: "Spider-Man", url: marvelSpiderManModelUrl, size: 0.84, spin: -0.32, front: 0 },
+      { name: "Venom", url: marvelVenomModelUrl, size: 0.88, spin: 0.26, front: 0 },
+    ],
   },
 ];
 
-const ORBITING_MODELS = [
-  { name: "Tim Stutzle", url: timStutzleModelUrl, path: 0, phase: 0.18, size: 1.04, spin: 0.44 },
-  { name: "Cuzzy", url: cuzzyModelUrl, path: 1, phase: 1.26, size: 1, spin: -0.4 },
-  { name: "Eklund", url: eklundModelUrl, path: 2, phase: 1.42, size: 1.03, spin: 0.38 },
-  { name: "Jake Sanderson", url: jakeSandersonModelUrl, path: 0, phase: 3.56, size: 1.02, spin: -0.41 },
-  { name: "Linus Ullmark", url: linusUllmarkModelUrl, path: 1, phase: 4.46, size: 1.06, spin: 0.43 },
-  { name: "Thomas Chabot", url: thomasChabotModelUrl, path: 2, phase: 4.55, size: 1.02, spin: -0.37 },
-];
+const ORBITING_MODELS = ORBIT_GROUPS.flatMap((group, groupIndex) =>
+  group.models.map((model, modelIndex) => ({
+    ...model,
+    path: groupIndex,
+    groupIndex,
+    modelIndex,
+    phase: group.phaseOffset + (modelIndex / group.models.length) * TAU,
+  })),
+);
 
 const hackathonProjects = [
   { name: "Code Jam 15", context: "McGill Engineering, 36h", description: "Minigames app including 2048, Snake, and Block Blast in one app.", href: "https://github.com/alex-wang55/CodeJam-Project" },
@@ -133,10 +174,10 @@ function OrbitalSculpture() {
     modelHost.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x000000, 0.045);
+    scene.fog = new THREE.FogExp2(0x000000, 0.03);
 
     const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
-    camera.position.set(0, 0.08, 11.5);
+    camera.position.set(0, 0.08, 14);
 
     const sculpture = new THREE.Group();
     scene.add(sculpture);
@@ -165,7 +206,13 @@ function OrbitalSculpture() {
       roughness: 0.38,
     });
 
-    const orbitPathData = ORBIT_PATHS.map((path) => ({
+    const orbiterMaterial = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      metalness: 0.01,
+      roughness: 0.54,
+    });
+
+    const orbitPathData = ORBIT_GROUPS.map((path) => ({
       ...path,
       euler: new THREE.Euler(...path.rotation),
     }));
@@ -209,7 +256,7 @@ function OrbitalSculpture() {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, width < 600 ? 1.35 : 1.7));
       renderer.setSize(width, height, false);
       camera.aspect = width / height;
-      camera.position.z = camera.aspect < 0.76 ? 12.8 : camera.aspect < 1 ? 11.7 : 10.8;
+      camera.position.z = camera.aspect < 0.76 ? 16.2 : camera.aspect < 1.05 ? 14.6 : 13.6;
       camera.updateProjectionMatrix();
       renderer.render(scene, camera);
     };
@@ -279,7 +326,18 @@ function OrbitalSculpture() {
         const path = orbitPathData[orbiter.config.path];
         const reveal = staticFrame
           ? 1
-          : easeOutQuint(THREE.MathUtils.clamp((elapsed - 0.48 - index * 0.12) / 1.05, 0, 1));
+          : easeOutQuint(
+            THREE.MathUtils.clamp(
+              (
+                elapsed -
+                0.46 -
+                orbiter.config.groupIndex * 0.18 -
+                orbiter.config.modelIndex * 0.07
+              ) / 1.08,
+              0,
+              1,
+            ),
+          );
         const orbitElapsed = staticFrame ? 0 : elapsed;
         const angle = orbiter.config.phase + orbitElapsed * path.speed;
 
@@ -293,10 +351,8 @@ function OrbitalSculpture() {
 
         orbiter.anchor.position.copy(workingPosition);
         orbiter.anchor.position.y += 0.02;
-        orbiter.anchor.scale.setScalar(Math.max(0.001, orbiter.config.size * reveal));
-        orbiter.spinner.rotation.y = -1.5 + orbitElapsed * orbiter.config.spin;
-        orbiter.spinner.position.y =
-          staticFrame ? 0 : Math.sin(elapsed * 1.08 + orbiter.config.phase) * 0.025;
+        orbiter.anchor.scale.setScalar(Math.max(0.001, reveal));
+        orbiter.spinner.rotation.y = orbiter.config.front + orbitElapsed * orbiter.config.spin;
       });
     };
 
@@ -327,7 +383,7 @@ function OrbitalSculpture() {
       });
 
     Promise.allSettled([
-      loadModel(spiderManModelUrl),
+      loadModel(namiModelUrl),
       ...ORBITING_MODELS.map((model) => loadModel(model.url)),
     ]).then((results) => {
       if (disposed) {
@@ -352,7 +408,7 @@ function OrbitalSculpture() {
 
       replaceMaterials(centralResult.value.scene, centralMaterial);
       centralRig = new THREE.Group();
-      centralRig.add(centerAndScaleModel(centralResult.value.scene, 3.45));
+      centralRig.add(centerAndScaleModel(centralResult.value.scene, 3.12));
       sculpture.add(centralRig);
 
       orbiterResults.forEach((result, index) => {
@@ -360,23 +416,19 @@ function OrbitalSculpture() {
           return;
         }
 
-        const material = new THREE.MeshStandardMaterial({
-          color: 0xffffff,
-          metalness: 0.01,
-          roughness: 0.56,
-        });
-        replaceMaterials(result.value.scene, material);
+        const config = ORBITING_MODELS[index];
+        replaceMaterials(result.value.scene, orbiterMaterial);
 
         const anchor = new THREE.Group();
         const spinner = new THREE.Group();
-        spinner.add(centerAndScaleModel(result.value.scene, 1));
+        spinner.add(centerAndScaleModel(result.value.scene, config.size, "max"));
         anchor.add(spinner);
         sculpture.add(anchor);
 
         orbiters.push({
           anchor,
           spinner,
-          config: ORBITING_MODELS[index],
+          config,
         });
       });
 
@@ -421,12 +473,12 @@ function OrbitalSculpture() {
         className={`orbital-model orbital-model--${modelState}`}
         ref={modelHostRef}
         role="img"
-        aria-label="White 3D sculptures orbiting a central Spider-Man figure"
+        aria-label="Three collections of white 3D sculptures orbiting a central gray League of Legends bust"
       />
       {modelState === "loading" ? (
         <p className="orbital-model-status" aria-live="polite">
           <span aria-hidden="true" />
-          Assembling the orbit
+          Assembling three orbits
         </p>
       ) : null}
       {modelState === "error" ? (
@@ -436,15 +488,18 @@ function OrbitalSculpture() {
   );
 }
 
-function centerAndScaleModel(model, targetHeight) {
+function centerAndScaleModel(model, targetSize, fit = "height") {
   model.updateMatrixWorld(true);
   const bounds = new THREE.Box3().setFromObject(model);
   const size = bounds.getSize(new THREE.Vector3());
   const center = bounds.getCenter(new THREE.Vector3());
   const wrapper = new THREE.Group();
+  const referenceSize = fit === "max"
+    ? Math.max(size.x, size.y, size.z)
+    : size.y;
 
   model.position.sub(center);
-  wrapper.scale.setScalar(targetHeight / Math.max(size.y, 0.001));
+  wrapper.scale.setScalar(targetSize / Math.max(referenceSize, 0.001));
   wrapper.add(model);
 
   return wrapper;
@@ -459,7 +514,7 @@ function replaceMaterials(model, material) {
     const materials = Array.isArray(child.material) ? child.material : [child.material];
     materials.forEach((existingMaterial) => existingMaterial?.dispose());
     child.material = material;
-    child.frustumCulled = true;
+    child.frustumCulled = false;
   });
 }
 
