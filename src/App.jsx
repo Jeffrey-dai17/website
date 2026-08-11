@@ -28,30 +28,32 @@ const TAU = Math.PI * 2;
 const ORBIT_GROUPS = [
   {
     id: "interest",
-    radiusX: 1.78,
-    radiusY: 0.64,
-    rotation: [1.03, 0.04, -0.1],
-    speed: 0.22,
+    radius: 3.12,
+    depth: 0.52,
+    depthPhase: 2.35,
+    revealOrder: 2,
+    speed: 0.11,
     color: 0xd2a94c,
-    opacity: 0.34,
-    phaseOffset: 0.18,
+    opacity: 0.28,
+    phaseOffset: 0.62,
     models: [
-      { name: "BMW X3", url: interestBmwModelUrl, size: 0.66, spin: 0.28, front: 0.2 },
-      { name: "Keyboard", url: interestKeyboardModelUrl, size: 0.56, spin: -0.31, front: 0.1 },
-      { name: "Pig", url: interestPigModelUrl, size: 0.62, spin: 0.36, front: -1.2 },
-      { name: "Sushi", url: interestSushiModelUrl, size: 0.54, spin: -0.3, front: 0 },
-      { name: "Volleyball", url: interestVolleyballModelUrl, size: 0.42, spin: 0.42, front: 0 },
+      { name: "BMW X3", url: interestBmwModelUrl, size: 0.7, spin: 0.28, front: 0.2, tilt: -0.18 },
+      { name: "Keyboard", url: interestKeyboardModelUrl, size: 0.62, spin: -0.31, front: 0.1, tilt: -0.52 },
+      { name: "Pig", url: interestPigModelUrl, size: 0.64, spin: 0.36, front: -1.2 },
+      { name: "Sushi", url: interestSushiModelUrl, size: 0.6, spin: -0.3, front: 0, tilt: -0.34 },
+      { name: "Volleyball", url: interestVolleyballModelUrl, size: 0.46, spin: 0.42, front: 0 },
     ],
   },
   {
     id: "sens",
-    radiusX: 2.58,
-    radiusY: 1.34,
-    rotation: [0.5, -0.22, 0.58],
-    speed: -0.16,
+    radius: 2.4,
+    depth: 0.42,
+    depthPhase: 1.15,
+    revealOrder: 1,
+    speed: -0.17,
     color: 0xf4efe6,
-    opacity: 0.15,
-    phaseOffset: 0.66,
+    opacity: 0.13,
+    phaseOffset: 0.52,
     models: [
       { name: "Tim Stutzle", url: timStutzleModelUrl, size: 0.74, spin: 0.42, front: -1.5 },
       { name: "Cuzzy", url: cuzzyModelUrl, size: 0.71, spin: -0.39, front: -1.5 },
@@ -63,13 +65,14 @@ const ORBIT_GROUPS = [
   },
   {
     id: "marvel",
-    radiusX: 3.34,
-    radiusY: 1.86,
-    rotation: [0.48, 0.18, -0.58],
-    speed: 0.12,
+    radius: 1.68,
+    depth: 0.32,
+    depthPhase: 0,
+    revealOrder: 0,
+    speed: 0.2,
     color: 0xd13a32,
-    opacity: 0.22,
-    phaseOffset: 1.12,
+    opacity: 0.26,
+    phaseOffset: 0,
     models: [
       { name: "Captain America", url: marvelCaptainAmericaModelUrl, size: 0.8, spin: 0.27, front: 0 },
       { name: "Deadpool", url: marvelDeadpoolModelUrl, size: 0.8, spin: -0.3, front: 0 },
@@ -177,7 +180,7 @@ function OrbitalSculpture() {
     scene.fog = new THREE.FogExp2(0x000000, 0.03);
 
     const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
-    camera.position.set(0, 0.08, 14);
+    camera.position.set(0, 0, 14);
 
     const sculpture = new THREE.Group();
     scene.add(sculpture);
@@ -212,10 +215,7 @@ function OrbitalSculpture() {
       roughness: 0.54,
     });
 
-    const orbitPathData = ORBIT_GROUPS.map((path) => ({
-      ...path,
-      euler: new THREE.Euler(...path.rotation),
-    }));
+    const orbitPathData = ORBIT_GROUPS;
 
     const orbitLines = orbitPathData.map((path) => {
       const points = [];
@@ -223,10 +223,10 @@ function OrbitalSculpture() {
         const angle = (index / 180) * Math.PI * 2;
         points.push(
           new THREE.Vector3(
-            Math.cos(angle) * path.radiusX,
-            Math.sin(angle) * path.radiusY,
+            Math.cos(angle) * path.radius,
+            Math.sin(angle) * path.radius,
             0,
-          ).applyEuler(path.euler),
+          ),
         );
       }
 
@@ -240,7 +240,11 @@ function OrbitalSculpture() {
         }),
       );
       sculpture.add(line);
-      return { line, targetOpacity: path.opacity };
+      return {
+        line,
+        revealOrder: path.revealOrder,
+        targetOpacity: path.opacity,
+      };
     });
 
     const pointerTarget = new THREE.Vector2();
@@ -305,24 +309,22 @@ function OrbitalSculpture() {
       const pointerDamping = 1 - Math.exp(-delta * 4.8);
 
       pointerCurrent.lerp(pointerTarget, staticFrame ? 1 : pointerDamping);
-      sculpture.rotation.x = staticFrame ? 0 : -pointerCurrent.y * 0.045;
-      sculpture.rotation.y = staticFrame ? 0 : pointerCurrent.x * 0.075;
 
       centralRig.scale.setScalar(THREE.MathUtils.lerp(0.78, 1, centralReveal));
-      centralRig.position.y =
-        THREE.MathUtils.lerp(-0.24, -0.05, centralReveal) +
-        (staticFrame ? 0 : Math.sin(elapsed * 0.72) * 0.035);
+      centralRig.position.y = THREE.MathUtils.lerp(-0.18, 0, centralReveal);
       centralRig.rotation.y = staticFrame ? 0 : pointerCurrent.x * 0.07;
       centralRig.rotation.x = staticFrame ? 0 : -pointerCurrent.y * 0.035;
 
-      orbitLines.forEach(({ line, targetOpacity }, index) => {
+      orbitLines.forEach(({ line, revealOrder, targetOpacity }) => {
         const lineReveal = staticFrame
           ? 1
-          : easeOutQuint(THREE.MathUtils.clamp((elapsed - 0.28 - index * 0.12) / 1.35, 0, 1));
+          : easeOutQuint(
+            THREE.MathUtils.clamp((elapsed - 0.28 - revealOrder * 0.12) / 1.35, 0, 1),
+          );
         line.material.opacity = targetOpacity * lineReveal;
       });
 
-      orbiters.forEach((orbiter, index) => {
+      orbiters.forEach((orbiter) => {
         const path = orbitPathData[orbiter.config.path];
         const reveal = staticFrame
           ? 1
@@ -331,7 +333,7 @@ function OrbitalSculpture() {
               (
                 elapsed -
                 0.46 -
-                orbiter.config.groupIndex * 0.18 -
+                path.revealOrder * 0.18 -
                 orbiter.config.modelIndex * 0.07
               ) / 1.08,
               0,
@@ -343,14 +345,12 @@ function OrbitalSculpture() {
 
         workingPosition
           .set(
-            Math.cos(angle) * path.radiusX,
-            Math.sin(angle) * path.radiusY,
-            0,
-          )
-          .applyEuler(path.euler);
+            Math.cos(angle) * path.radius,
+            Math.sin(angle) * path.radius,
+            Math.sin(angle + path.depthPhase) * path.depth,
+          );
 
         orbiter.anchor.position.copy(workingPosition);
-        orbiter.anchor.position.y += 0.02;
         orbiter.anchor.scale.setScalar(Math.max(0.001, reveal));
         orbiter.spinner.rotation.y = orbiter.config.front + orbitElapsed * orbiter.config.spin;
       });
@@ -421,6 +421,7 @@ function OrbitalSculpture() {
 
         const anchor = new THREE.Group();
         const spinner = new THREE.Group();
+        spinner.rotation.x = config.tilt ?? 0;
         spinner.add(centerAndScaleModel(result.value.scene, config.size, "max"));
         anchor.add(spinner);
         sculpture.add(anchor);
