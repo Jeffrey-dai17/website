@@ -186,6 +186,248 @@
   transform: scale(1);
 }
 
+.orbital-model.is-model-hovered .orbital-model-canvas {
+  cursor: pointer;
+}
+
+.orbit-guide-button {
+  position: absolute;
+  z-index: 4;
+  top: var(--space-4);
+  right: var(--space-4);
+  display: grid;
+  grid-template-columns: 2rem auto;
+  gap: var(--space-3);
+  min-height: 58px;
+  align-items: center;
+  padding: 0.55rem 0.8rem 0.55rem 0.6rem;
+  overflow: hidden;
+  border: 1px solid var(--color-line-strong);
+  background: var(--color-paper-deep);
+  color: var(--color-paper);
+  box-shadow: 0 14px 34px rgb(0 0 0 / 38%);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition:
+    border-color 180ms ease,
+    color 180ms ease,
+    background 180ms ease,
+    opacity 180ms ease;
+}
+
+.orbit-guide-button::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  content: "";
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.orbit-guide-button:hover,
+.orbit-guide-button[aria-expanded="true"] {
+  border-color: var(--color-accent);
+  background: #211d19;
+}
+
+.orbit-guide-button:hover::after,
+.orbit-guide-button[aria-expanded="true"]::after {
+  transform: scaleX(1);
+}
+
+.orbit-guide-glyph {
+  position: relative;
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 1px solid var(--color-line);
+  transition:
+    border-color 220ms ease,
+    transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.orbit-guide-glyph::before,
+.orbit-guide-glyph::after {
+  position: absolute;
+  content: "";
+  background: var(--color-paper);
+}
+
+.orbit-guide-glyph::before {
+  width: 0.7rem;
+  height: 1px;
+}
+
+.orbit-guide-glyph::after {
+  width: 1px;
+  height: 0.7rem;
+}
+
+.orbit-guide-glyph > span {
+  width: 3px;
+  height: 3px;
+  background: var(--color-accent);
+}
+
+.orbit-guide-button[aria-expanded="true"] .orbit-guide-glyph {
+  border-color: var(--color-accent);
+  transform: rotate(45deg);
+}
+
+.orbit-guide-label {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.orbit-guide-label strong {
+  font-family: var(--font-display);
+  font-size: 0.84rem;
+  line-height: 1.1;
+}
+
+.orbit-guide-label small {
+  color: var(--color-muted);
+  font-family: var(--font-mono);
+  font-size: 0.61rem;
+  font-weight: 600;
+  letter-spacing: 0.045em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.orbit-panel {
+  position: absolute;
+  z-index: 5;
+  bottom: var(--space-4);
+  left: var(--space-4);
+  display: grid;
+  gap: var(--space-3);
+  width: min(21rem, calc(100% - 2rem));
+  padding: var(--space-4);
+  border: 1px solid var(--color-line);
+  border-top: 2px solid var(--color-accent);
+  background: #0e0d0c;
+  box-shadow: 0 20px 52px rgb(0 0 0 / 46%);
+}
+
+.orbit-panel--guide {
+  width: min(27rem, calc(100% - 2rem));
+  border-top-color: var(--color-gold);
+}
+
+.orbit-panel-content {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.orbit-panel-header {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.orbit-panel-kicker {
+  margin: 0;
+  color: var(--color-gold);
+  font-family: var(--font-mono);
+  font-size: 0.67rem;
+  font-weight: 600;
+  letter-spacing: 0.055em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.orbit-panel-close {
+  display: grid;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid var(--color-line);
+  background: transparent;
+  color: var(--color-paper);
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.orbit-panel-close:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  transform: rotate(4deg);
+}
+
+.orbit-panel-close svg {
+  width: 1rem;
+  fill: none;
+  stroke: currentcolor;
+  stroke-linecap: square;
+  stroke-width: 1.5;
+}
+
+.orbit-guide-copy,
+.orbit-message-copy {
+  margin: 0;
+}
+
+.orbit-guide-copy {
+  max-width: 39ch;
+  color: var(--color-soft-ink);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.orbit-message-copy {
+  color: var(--color-paper);
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.orbit-model-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--color-line);
+  border-left: 1px solid var(--color-line);
+}
+
+.orbit-model-shortcuts button {
+  min-height: 44px;
+  padding: 0.6rem 0.7rem;
+  border: 0;
+  border-right: 1px solid var(--color-line);
+  border-bottom: 1px solid var(--color-line);
+  background: transparent;
+  color: var(--color-paper);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: left;
+  text-transform: uppercase;
+  transition:
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.orbit-model-shortcuts button:hover {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
 .orbital-model-status,
 .orbital-model-error {
   position: absolute;
@@ -639,6 +881,37 @@
     min-height: 25rem;
   }
 
+  .orbit-guide-button {
+    top: var(--space-3);
+    right: var(--space-3);
+  }
+
+  .orbit-guide-button[aria-expanded="true"] {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .orbit-panel {
+    bottom: var(--space-3);
+    left: var(--space-3);
+    width: calc(100% - 1.5rem);
+    padding: var(--space-3);
+  }
+
+  .orbit-guide-copy {
+    font-size: 0.86rem;
+  }
+
+  .orbit-model-shortcuts button {
+    padding: 0.55rem;
+    font-size: 0.61rem;
+  }
+
+  .orbit-model-shortcuts {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .page-section {
     gap: var(--space-5);
   }
@@ -659,6 +932,14 @@
   }
 
   .orbital-model-canvas {
+    transition: none;
+  }
+
+  .orbit-guide-button,
+  .orbit-guide-button::after,
+  .orbit-guide-glyph,
+  .orbit-panel-close,
+  .orbit-model-shortcuts button {
     transition: none;
   }
 

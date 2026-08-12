@@ -1,7 +1,7 @@
 import "./App.css";
 
 import { useEffect, useRef, useState } from "react";
-import { MotionConfig, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, MotionConfig, motion, useReducedMotion } from "motion/react";
 import * as THREE from "three";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
@@ -26,6 +26,28 @@ import timStutzleModelUrl from "./assets/models/tim-stutzle.glb?url";
 const TAU = Math.PI * 2;
 const JEFF_FRONT_ANGLE = -Math.PI / 2;
 
+const MODEL_MESSAGES = {
+  "interest-bmw": { category: "Interest", title: "BMW X3", message: "a" },
+  "interest-keyboard": { category: "Interest", title: "Keyboard", message: "b" },
+  "interest-pig": { category: "Interest", title: "Pig", message: "c" },
+  "interest-sushi": { category: "Interest", title: "Sushi", message: "d" },
+  "interest-volleyball": { category: "Interest", title: "Volleyball", message: "e" },
+  "interest-dumbbell": { category: "Interest", title: "Dumbbell", message: "f" },
+  sens: { category: "Hockey", title: "Hockey players", message: "g" },
+  marvel: { category: "Marvel", title: "Marvel characters", message: "h" },
+};
+
+const MODEL_MESSAGE_ORDER = [
+  "interest-bmw",
+  "interest-keyboard",
+  "interest-pig",
+  "interest-sushi",
+  "interest-volleyball",
+  "interest-dumbbell",
+  "sens",
+  "marvel",
+];
+
 const ORBIT_GROUPS = [
   {
     id: "interest",
@@ -38,15 +60,17 @@ const ORBIT_GROUPS = [
     opacity: 0.28,
     phaseOffset: 0.62,
     models: [
-      { name: "BMW X3", url: interestBmwModelUrl, size: 0.7, spin: 0.28, front: 0.2, tilt: -0.18 },
-      { name: "Keyboard", url: interestKeyboardModelUrl, size: 0.62, spin: -0.31, front: 0.1, tilt: -0.52 },
-      { name: "Pig", url: interestPigModelUrl, size: 0.64, spin: 0.36, front: -1.2 },
-      { name: "Sushi", url: interestSushiModelUrl, size: 0.6, spin: -0.3, front: 0, tilt: -0.34 },
-      { name: "Volleyball", url: interestVolleyballModelUrl, size: 0.46, spin: 0.42, front: 0 },
+      { name: "BMW X3", interactionId: "interest-bmw", url: interestBmwModelUrl, size: 0.7, spin: 0.28, front: 0.2, tilt: -0.18 },
+      { name: "Keyboard", interactionId: "interest-keyboard", url: interestKeyboardModelUrl, size: 0.62, spin: -0.31, front: 0.1, tilt: -0.52 },
+      { name: "Pig", interactionId: "interest-pig", url: interestPigModelUrl, size: 0.64, spin: 0.36, front: -1.2 },
+      { name: "Sushi", interactionId: "interest-sushi", url: interestSushiModelUrl, size: 0.6, spin: -0.3, front: 0, tilt: -0.34 },
+      { name: "Volleyball", interactionId: "interest-volleyball", url: interestVolleyballModelUrl, size: 0.46, spin: 0.42, front: 0 },
+      { name: "Dumbbell", interactionId: "interest-dumbbell", create: createDumbbellModel, size: 0.58, spin: -0.38, front: 0.2, tilt: -0.18 },
     ],
   },
   {
     id: "sens",
+    interactionId: "sens",
     radius: 2.4,
     depth: 0.42,
     depthPhase: 1.15,
@@ -66,6 +90,7 @@ const ORBIT_GROUPS = [
   },
   {
     id: "marvel",
+    interactionId: "marvel",
     radius: 1.68,
     depth: 0.32,
     depthPhase: 0,
@@ -90,6 +115,8 @@ const ORBITING_MODELS = ORBIT_GROUPS.flatMap((group, groupIndex) =>
     path: groupIndex,
     groupIndex,
     modelIndex,
+    instanceId: `${group.id}-${modelIndex}`,
+    interactionId: model.interactionId ?? group.interactionId,
     phase: group.phaseOffset + (modelIndex / group.models.length) * TAU,
   })),
 );
@@ -141,7 +168,47 @@ function ArrowLink({ href, children, download = false }) {
 function OrbitalSculpture() {
   const shouldReduceMotion = useReducedMotion();
   const modelHostRef = useRef(null);
+  const selectionRef = useRef(null);
   const [modelState, setModelState] = useState("loading");
+  const [selection, setSelection] = useState(null);
+  const [isGuideOpen, setIsGuideOpen] = useState(false);
+  const activeMessage = selection
+    ? MODEL_MESSAGES[selection.interactionId]
+    : null;
+
+  useEffect(() => {
+    selectionRef.current = selection;
+  }, [selection]);
+
+  useEffect(() => {
+    if (!selection && !isGuideOpen) {
+      return undefined;
+    }
+
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape") {
+        setSelection(null);
+        setIsGuideOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [isGuideOpen, selection]);
+
+  const closePanel = () => {
+    setSelection(null);
+    setIsGuideOpen(false);
+  };
+
+  const selectFromGuide = (interactionId) => {
+    setSelection({
+      interactionId,
+      instanceId: null,
+      modelName: MODEL_MESSAGES[interactionId].title,
+    });
+    setIsGuideOpen(false);
+  };
 
   useEffect(() => {
     const modelHost = modelHostRef.current;
@@ -209,6 +276,8 @@ function OrbitalSculpture() {
       metalness: 0.01,
       roughness: 0.54,
     });
+    const hitTargetGeometry = new THREE.SphereGeometry(1, 10, 8);
+    const hitTargetMaterial = new THREE.MeshBasicMaterial();
 
     const orbitPathData = ORBIT_GROUPS;
 
@@ -244,8 +313,13 @@ function OrbitalSculpture() {
 
     const pointerTarget = new THREE.Vector2();
     const pointerCurrent = new THREE.Vector2();
+    const interactionPointer = new THREE.Vector2();
+    const raycaster = new THREE.Raycaster();
+    raycaster.layers.set(1);
     const orbiters = [];
+    const clickTargets = [];
     const workingPosition = new THREE.Vector3();
+    let hoveredInstanceId = null;
     let centralRig = null;
 
     const resizeModel = () => {
@@ -272,22 +346,55 @@ function OrbitalSculpture() {
     );
     intersectionObserver.observe(modelHost);
 
-    const handlePointerMove = (event) => {
+    const pickInteraction = (event) => {
       const bounds = modelHost.getBoundingClientRect();
-      pointerTarget.set(
+      interactionPointer.set(
         THREE.MathUtils.clamp(((event.clientX - bounds.left) / bounds.width) * 2 - 1, -1, 1),
-        THREE.MathUtils.clamp(((event.clientY - bounds.top) / bounds.height) * 2 - 1, -1, 1),
+        THREE.MathUtils.clamp(-((event.clientY - bounds.top) / bounds.height) * 2 + 1, -1, 1),
       );
+      sculpture.updateMatrixWorld(true);
+      raycaster.setFromCamera(interactionPointer, camera);
+
+      return raycaster.intersectObjects(clickTargets, false)[0]?.object.userData.selection ?? null;
+    };
+
+    const handlePointerMove = (event) => {
+      if (!shouldReduceMotion) {
+        const bounds = modelHost.getBoundingClientRect();
+        pointerTarget.set(
+          THREE.MathUtils.clamp(((event.clientX - bounds.left) / bounds.width) * 2 - 1, -1, 1),
+          THREE.MathUtils.clamp(((event.clientY - bounds.top) / bounds.height) * 2 - 1, -1, 1),
+        );
+      }
+
+      const hoveredSelection = sceneReady ? pickInteraction(event) : null;
+      hoveredInstanceId = hoveredSelection?.instanceId ?? null;
+      modelHost.classList.toggle("is-model-hovered", Boolean(hoveredSelection));
+    };
+
+    const handleModelClick = (event) => {
+      if (!sceneReady) {
+        return;
+      }
+
+      const nextSelection = pickInteraction(event);
+      if (!nextSelection) {
+        return;
+      }
+
+      setSelection(nextSelection);
+      setIsGuideOpen(false);
     };
 
     const resetPointer = () => {
       pointerTarget.set(0, 0);
+      hoveredInstanceId = null;
+      modelHost.classList.remove("is-model-hovered");
     };
 
-    if (!shouldReduceMotion) {
-      modelHost.addEventListener("pointermove", handlePointerMove);
-      modelHost.addEventListener("pointerleave", resetPointer);
-    }
+    modelHost.addEventListener("pointermove", handlePointerMove);
+    modelHost.addEventListener("pointerleave", resetPointer);
+    modelHost.addEventListener("click", handleModelClick);
 
     const updateScene = (delta, staticFrame = false) => {
       if (!centralRig) {
@@ -347,7 +454,27 @@ function OrbitalSculpture() {
           );
 
         orbiter.anchor.position.copy(workingPosition);
-        orbiter.anchor.scale.setScalar(Math.max(0.001, reveal));
+        const hoverTarget = hoveredInstanceId === orbiter.config.instanceId ? 1 : 0;
+        const selectedTarget =
+          selectionRef.current?.instanceId === orbiter.config.instanceId ? 1 : 0;
+        const interactionDamping = staticFrame ? 1 : 1 - Math.exp(-delta * 10);
+
+        orbiter.hoverAmount = THREE.MathUtils.lerp(
+          orbiter.hoverAmount,
+          hoverTarget,
+          interactionDamping,
+        );
+        orbiter.selectedAmount = THREE.MathUtils.lerp(
+          orbiter.selectedAmount,
+          selectedTarget,
+          interactionDamping,
+        );
+        orbiter.anchor.scale.setScalar(
+          Math.max(
+            0.001,
+            reveal * (1 + orbiter.hoverAmount * 0.07 + orbiter.selectedAmount * 0.11),
+          ),
+        );
         orbiter.spinner.rotation.y = orbiter.config.front + orbitElapsed * orbiter.config.spin;
       });
     };
@@ -380,7 +507,11 @@ function OrbitalSculpture() {
 
     Promise.allSettled([
       loadModel(jeffModelUrl),
-      ...ORBITING_MODELS.map((model) => loadModel(model.url)),
+      ...ORBITING_MODELS.map((model) =>
+        model.url
+          ? loadModel(model.url)
+          : Promise.resolve().then(() => ({ scene: model.create() })),
+      ),
     ]).then((results) => {
       if (disposed) {
         results.forEach((result) => {
@@ -419,12 +550,25 @@ function OrbitalSculpture() {
         spinner.rotation.x = config.tilt ?? 0;
         spinner.add(centerAndScaleModel(result.value.scene, config.size, "max"));
         anchor.add(spinner);
+
+        const hitTarget = new THREE.Mesh(hitTargetGeometry, hitTargetMaterial);
+        hitTarget.layers.set(1);
+        hitTarget.scale.setScalar(Math.max(config.size * 0.46, 0.24));
+        hitTarget.userData.selection = {
+          interactionId: config.interactionId,
+          instanceId: config.instanceId,
+          modelName: config.name,
+        };
+        anchor.add(hitTarget);
+        clickTargets.push(hitTarget);
         sculpture.add(anchor);
 
         orbiters.push({
           anchor,
           spinner,
           config,
+          hoverAmount: 0,
+          selectedAmount: 0,
         });
       });
 
@@ -447,6 +591,7 @@ function OrbitalSculpture() {
       intersectionObserver.disconnect();
       modelHost.removeEventListener("pointermove", handlePointerMove);
       modelHost.removeEventListener("pointerleave", resetPointer);
+      modelHost.removeEventListener("click", handleModelClick);
       scene.traverse((child) => {
         if (child.isMesh) {
           child.geometry?.dispose();
@@ -468,9 +613,106 @@ function OrbitalSculpture() {
       <div
         className={`orbital-model orbital-model--${modelState}`}
         ref={modelHostRef}
-        role="img"
-        aria-label="Three collections of white 3D sculptures orbiting a central 3D portrait of Jeffrey"
+        role="group"
+        aria-label="Interactive 3D portrait. Click any orbiting model to open its message."
       />
+      {modelState === "ready" ? (
+        <motion.button
+          aria-controls="orbit-interaction-panel"
+          aria-expanded={isGuideOpen}
+          className="orbit-guide-button"
+          onClick={() => {
+            setSelection(null);
+            setIsGuideOpen((isOpen) => !isOpen);
+          }}
+          type="button"
+          whileHover={{ y: -2 }}
+          whileTap={{ scale: 0.985 }}
+        >
+          <span className="orbit-guide-glyph" aria-hidden="true">
+            <span />
+          </span>
+          <span className="orbit-guide-label">
+            <strong>Explore the orbit</strong>
+            <small>Click orbiting models</small>
+          </span>
+        </motion.button>
+      ) : null}
+      <AnimatePresence initial={false}>
+        {isGuideOpen || activeMessage ? (
+          <motion.aside
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            aria-label={isGuideOpen ? "How to explore the 3D models" : "Selected model message"}
+            className={`orbit-panel${isGuideOpen ? " orbit-panel--guide" : ""}`}
+            exit={{ opacity: 0, scale: 0.99, y: 8 }}
+            id="orbit-interaction-panel"
+            initial={{ opacity: 0, scale: 0.985, y: 14 }}
+            key="orbit-panel"
+            layout
+            transition={{
+              duration: 0.3,
+              ease: [0.22, 1, 0.36, 1],
+              layout: { duration: 0.38, ease: [0.22, 1, 0.36, 1] },
+            }}
+          >
+            <AnimatePresence initial={false} mode="wait">
+              <motion.div
+                animate={{ opacity: 1, y: 0 }}
+                className="orbit-panel-content"
+                exit={{ opacity: 0, y: -4 }}
+                initial={{ opacity: 0, y: 6 }}
+                key={
+                  isGuideOpen
+                    ? "guide"
+                    : `${selection.interactionId}-${selection.instanceId ?? "shortcut"}`
+                }
+                transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div className="orbit-panel-header">
+                  <p className="orbit-panel-kicker">
+                    {isGuideOpen
+                      ? "Interactive sculpture"
+                      : `${activeMessage.category} / ${selection.modelName}`}
+                  </p>
+                  <button
+                    aria-label="Close orbit panel"
+                    className="orbit-panel-close"
+                    onClick={closePanel}
+                    type="button"
+                  >
+                    <svg aria-hidden="true" viewBox="0 0 20 20">
+                      <path d="M4 4l12 12M16 4L4 16" />
+                    </svg>
+                  </button>
+                </div>
+                {isGuideOpen ? (
+                  <>
+                    <p className="orbit-guide-copy">
+                      Click a sculpture as it passes. Each interest has its own note;
+                      hockey and Marvel share one message each.
+                    </p>
+                    <div className="orbit-model-shortcuts" aria-label="Model message shortcuts">
+                      {MODEL_MESSAGE_ORDER.map((interactionId) => (
+                        <button
+                          key={interactionId}
+                          onClick={() => selectFromGuide(interactionId)}
+                          type="button"
+                        >
+                          {MODEL_MESSAGES[interactionId].title}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <p className="orbit-message-copy" aria-live="polite">
+                    {activeMessage.message}
+                  </p>
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </motion.aside>
+        ) : null}
+      </AnimatePresence>
       {modelState === "loading" ? (
         <p className="orbital-model-status" aria-live="polite">
           <span aria-hidden="true" />
@@ -482,6 +724,37 @@ function OrbitalSculpture() {
       ) : null}
     </>
   );
+}
+
+function createDumbbellModel() {
+  const model = new THREE.Group();
+  const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  const handle = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.085, 0.085, 1.7, 18),
+    material,
+  );
+  handle.rotation.z = Math.PI / 2;
+  model.add(handle);
+
+  const plateGeometry = new THREE.CylinderGeometry(0.34, 0.34, 0.22, 22);
+  const outerPlateGeometry = new THREE.CylinderGeometry(0.27, 0.27, 0.18, 22);
+  const collarGeometry = new THREE.CylinderGeometry(0.15, 0.15, 0.12, 18);
+
+  [
+    { geometry: collarGeometry, x: -0.53 },
+    { geometry: plateGeometry, x: -0.71 },
+    { geometry: outerPlateGeometry, x: -0.91 },
+    { geometry: collarGeometry, x: 0.53 },
+    { geometry: plateGeometry, x: 0.71 },
+    { geometry: outerPlateGeometry, x: 0.91 },
+  ].forEach(({ geometry, x }) => {
+    const piece = new THREE.Mesh(geometry, material);
+    piece.position.x = x;
+    piece.rotation.z = Math.PI / 2;
+    model.add(piece);
+  });
+
+  return model;
 }
 
 function centerAndScaleModel(model, targetSize, fit = "height") {
