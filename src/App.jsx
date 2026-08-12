@@ -851,17 +851,17 @@ function ProfessionalExperience() {
         <p className="section-eyebrow">Professional Experience</p>
         <h2 id="professional-experience-title">Canada Revenue Agency</h2>
       </Reveal>
-      <Reveal className="feature-row" as="article" aria-label="CRA internship">
+      <Reveal className="feature-row" as="article" aria-label="CRA internship and part-time continuation">
         <div className="row-meta">
-          <p className="experience-label">4-month internship</p>
+          <p className="experience-label">Internship + part-time continuation</p>
           <h3>Enterprise Fraud Management Information Technology Branch</h3>
           <div className="meta-chip-row" aria-label="Public experience keywords">
-            <span>XML</span><span>Java</span><span>Enterprise environment</span>
+            <span>XML</span><span>Java</span><span>20 hours / week</span><span>Full-time McGill</span>
           </div>
         </div>
         <div className="row-copy">
           <p>At the CRA Enterprise Fraud Management Information Technology Branch, Jeffrey worked on mapping information between systems using XML and Java, contributing to enterprise-scale fraud-detection tooling.</p>
-          <p>The work took place in an enterprise-scale production environment, giving the internship direct relevance to software engineering teams that maintain critical, real-world systems.</p>
+          <p>Following the four-month internship, Jeffrey continues with the CRA from August 29 through December 29 on a part-time schedule of 20 hours per week while completing a full-time Computer Engineering course load at McGill.</p>
         </div>
       </Reveal>
     </section>
