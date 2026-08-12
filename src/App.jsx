@@ -26,6 +26,17 @@ import timStutzleModelUrl from "./assets/models/tim-stutzle.glb?url";
 const TAU = Math.PI * 2;
 const JEFF_FRONT_ANGLE = -Math.PI / 2;
 
+const SCULPTURE_PALETTE = {
+  carbon: 0x070908,
+  porcelain: 0xe7dfd2,
+  porcelainHover: 0xf7f1e8,
+  quietPorcelain: 0xaaa49a,
+  verdigris: 0x83bfae,
+  verdigrisLight: 0xb8ded4,
+  verdigrisEmissive: 0x173f36,
+  terracotta: 0xc35b4e,
+};
+
 const MODEL_MESSAGES = {
   "interest-bmw": { category: "Interest", title: "BMW X3", message: "a" },
   "interest-keyboard": { category: "Interest", title: "Keyboard", message: "b" },
@@ -96,7 +107,7 @@ const ORBIT_GROUPS = [
     depthPhase: 0,
     revealOrder: 0,
     speed: 0.2,
-    color: 0xd13a32,
+    color: SCULPTURE_PALETTE.terracotta,
     opacity: 0.26,
     phaseOffset: 0,
     models: [
@@ -119,6 +130,16 @@ const ORBITING_MODELS = ORBIT_GROUPS.flatMap((group, groupIndex) =>
     interactionId: model.interactionId ?? group.interactionId,
     phase: group.phaseOffset + (modelIndex / group.models.length) * TAU,
   })),
+);
+
+const GUIDE_SELECTIONS = Object.fromEntries(
+  MODEL_MESSAGE_ORDER.map((interactionId) => {
+    const model = ORBITING_MODELS.find(
+      (orbiter) => orbiter.interactionId === interactionId,
+    );
+
+    return [interactionId, model];
+  }),
 );
 
 const hackathonProjects = [
@@ -169,6 +190,7 @@ function OrbitalSculpture() {
   const shouldReduceMotion = useReducedMotion();
   const modelHostRef = useRef(null);
   const selectionRef = useRef(null);
+  const renderStaticSceneRef = useRef(null);
   const [modelState, setModelState] = useState("loading");
   const [selection, setSelection] = useState(null);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
@@ -178,7 +200,11 @@ function OrbitalSculpture() {
 
   useEffect(() => {
     selectionRef.current = selection;
-  }, [selection]);
+
+    if (shouldReduceMotion) {
+      renderStaticSceneRef.current?.();
+    }
+  }, [selection, shouldReduceMotion]);
 
   useEffect(() => {
     if (!selection && !isGuideOpen) {
@@ -202,10 +228,12 @@ function OrbitalSculpture() {
   };
 
   const selectFromGuide = (interactionId) => {
+    const model = GUIDE_SELECTIONS[interactionId];
+
     setSelection({
       interactionId,
-      instanceId: null,
-      modelName: MODEL_MESSAGES[interactionId].title,
+      instanceId: model?.instanceId ?? null,
+      modelName: model?.name ?? MODEL_MESSAGES[interactionId].title,
     });
     setIsGuideOpen(false);
   };
@@ -245,7 +273,7 @@ function OrbitalSculpture() {
     modelHost.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x000000, 0.03);
+    scene.fog = new THREE.FogExp2(SCULPTURE_PALETTE.carbon, 0.03);
 
     const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
     camera.position.set(0, 0, 14);
@@ -263,7 +291,7 @@ function OrbitalSculpture() {
     fillLight.position.set(-4.8, 1.4, 3.2);
     scene.add(fillLight);
 
-    const rimLight = new THREE.DirectionalLight(0xd13a32, 2.1);
+    const rimLight = new THREE.DirectionalLight(SCULPTURE_PALETTE.terracotta, 2.1);
     rimLight.position.set(-3.8, 3.2, -5.5);
     scene.add(rimLight);
 
@@ -271,13 +299,17 @@ function OrbitalSculpture() {
     warmRimLight.position.set(3.4, -1.8, 2.6);
     scene.add(warmRimLight);
 
-    const orbiterMaterial = new THREE.MeshStandardMaterial({
-      color: 0xffffff,
-      metalness: 0.01,
-      roughness: 0.54,
-    });
+    const porcelainColor = new THREE.Color(SCULPTURE_PALETTE.porcelain);
+    const porcelainHoverColor = new THREE.Color(SCULPTURE_PALETTE.porcelainHover);
+    const quietPorcelainColor = new THREE.Color(SCULPTURE_PALETTE.quietPorcelain);
+    const selectedColor = new THREE.Color(SCULPTURE_PALETTE.verdigris);
+    const selectedEmissiveColor = new THREE.Color(SCULPTURE_PALETTE.verdigrisEmissive);
+    const workingMaterialColor = new THREE.Color();
     const hitTargetGeometry = new THREE.SphereGeometry(1, 10, 8);
-    const hitTargetMaterial = new THREE.MeshBasicMaterial();
+    const hitTargetMaterial = new THREE.MeshBasicMaterial({
+      colorWrite: false,
+      depthWrite: false,
+    });
 
     const orbitPathData = ORBIT_GROUPS;
 
@@ -369,6 +401,10 @@ function OrbitalSculpture() {
 
       const hoveredSelection = sceneReady ? pickInteraction(event) : null;
       hoveredInstanceId = hoveredSelection?.instanceId ?? null;
+
+      if (shouldReduceMotion) {
+        renderStaticSceneRef.current?.();
+      }
       modelHost.classList.toggle("is-model-hovered", Boolean(hoveredSelection));
     };
 
@@ -382,13 +418,21 @@ function OrbitalSculpture() {
         return;
       }
 
-      setSelection(nextSelection);
+      setSelection((currentSelection) =>
+        currentSelection?.instanceId === nextSelection.instanceId
+          ? null
+          : nextSelection,
+      );
       setIsGuideOpen(false);
     };
 
     const resetPointer = () => {
       pointerTarget.set(0, 0);
       hoveredInstanceId = null;
+
+      if (shouldReduceMotion) {
+        renderStaticSceneRef.current?.();
+      }
       modelHost.classList.remove("is-model-hovered");
     };
 
@@ -453,11 +497,18 @@ function OrbitalSculpture() {
             Math.sin(angle + path.depthPhase) * path.depth,
           );
 
-        orbiter.anchor.position.copy(workingPosition);
         const hoverTarget = hoveredInstanceId === orbiter.config.instanceId ? 1 : 0;
         const selectedTarget =
           selectionRef.current?.instanceId === orbiter.config.instanceId ? 1 : 0;
+        const quietTarget =
+          selectionRef.current?.instanceId && !selectedTarget ? 1 : 0;
         const interactionDamping = staticFrame ? 1 : 1 - Math.exp(-delta * 10);
+        const selectionDamping = staticFrame ? 1 : 1 - Math.exp(-delta * 7.2);
+
+        if (Boolean(selectedTarget) !== orbiter.isSelected) {
+          orbiter.isSelected = Boolean(selectedTarget);
+          orbiter.activationAmount = selectedTarget ? 1 : 0;
+        }
 
         orbiter.hoverAmount = THREE.MathUtils.lerp(
           orbiter.hoverAmount,
@@ -467,16 +518,87 @@ function OrbitalSculpture() {
         orbiter.selectedAmount = THREE.MathUtils.lerp(
           orbiter.selectedAmount,
           selectedTarget,
-          interactionDamping,
+          selectionDamping,
         );
+        orbiter.quietAmount = THREE.MathUtils.lerp(
+          orbiter.quietAmount,
+          quietTarget,
+          selectionDamping,
+        );
+
+        if (staticFrame) {
+          orbiter.activationAmount = 0;
+        } else {
+          orbiter.activationAmount = Math.max(
+            0,
+            orbiter.activationAmount - delta * 1.55,
+          );
+        }
+
+        const selectedEase = THREE.MathUtils.smoothstep(
+          orbiter.selectedAmount,
+          0,
+          1,
+        );
+        const activationProgress = 1 - orbiter.activationAmount;
+        const activationPulse =
+          Math.sin(activationProgress * Math.PI) * orbiter.activationAmount;
+        const hoverScale = orbiter.hoverAmount * (selectedTarget ? 0.025 : 0.065);
+
+        orbiter.anchor.position.copy(workingPosition);
+        orbiter.anchor.position.z += selectedEase * 0.22;
         orbiter.anchor.scale.setScalar(
           Math.max(
             0.001,
-            reveal * (1 + orbiter.hoverAmount * 0.07 + orbiter.selectedAmount * 0.11),
+            reveal * (1 + hoverScale + selectedEase * 0.145 + activationPulse * 0.035),
           ),
         );
-        orbiter.spinner.rotation.y = orbiter.config.front + orbitElapsed * orbiter.config.spin;
+
+        if (!staticFrame) {
+          orbiter.spinAngle +=
+            delta *
+            orbiter.config.spin *
+            THREE.MathUtils.lerp(1, 0.2, selectedEase);
+        }
+
+        orbiter.spinner.rotation.y =
+          orbiter.config.front +
+          orbiter.spinAngle +
+          (
+            staticFrame
+              ? 0
+              : Math.sin(elapsed * 0.9 + orbiter.config.phase) * 0.045 * selectedEase
+          );
+
+        workingMaterialColor
+          .copy(porcelainColor)
+          .lerp(quietPorcelainColor, orbiter.quietAmount * 0.38)
+          .lerp(
+            porcelainHoverColor,
+            orbiter.hoverAmount * 0.34 * (1 - selectedEase),
+          )
+          .lerp(selectedColor, selectedEase);
+
+        orbiter.material.color.copy(workingMaterialColor);
+        orbiter.material.emissive.copy(selectedEmissiveColor);
+        orbiter.material.emissiveIntensity = selectedEase * 0.32;
+        orbiter.material.metalness = THREE.MathUtils.lerp(0.04, 0.18, selectedEase);
+        orbiter.material.roughness = THREE.MathUtils.lerp(0.52, 0.34, selectedEase);
+
+        orbiter.halo.group.visible =
+          selectedEase > 0.002 || orbiter.activationAmount > 0.002;
+        orbiter.halo.group.scale.setScalar(0.9 + selectedEase * 0.1);
+        orbiter.halo.ring.material.opacity = selectedEase * 0.48;
+        orbiter.halo.arc.material.opacity = selectedEase * 0.92;
+        orbiter.halo.pulse.material.opacity = activationPulse * 0.72;
+        orbiter.halo.pulse.scale.setScalar(1 + activationProgress * 0.42);
+
+        if (!staticFrame) {
+          orbiter.halo.arc.rotation.z += delta * 0.28 * selectedEase;
+          orbiter.halo.ring.rotation.z -= delta * 0.08 * selectedEase;
+        }
       });
+
     };
 
     const animate = (frameTime) => {
@@ -543,7 +665,14 @@ function OrbitalSculpture() {
         }
 
         const config = ORBITING_MODELS[index];
-        replaceMaterials(result.value.scene, orbiterMaterial);
+        const material = new THREE.MeshStandardMaterial({
+          color: SCULPTURE_PALETTE.porcelain,
+          emissive: SCULPTURE_PALETTE.verdigrisEmissive,
+          emissiveIntensity: 0,
+          metalness: 0.04,
+          roughness: 0.52,
+        });
+        replaceMaterials(result.value.scene, material);
 
         const anchor = new THREE.Group();
         const spinner = new THREE.Group();
@@ -551,9 +680,16 @@ function OrbitalSculpture() {
         spinner.add(centerAndScaleModel(result.value.scene, config.size, "max"));
         anchor.add(spinner);
 
+        const halo = createSelectionHalo(
+          config.size * 0.7,
+          SCULPTURE_PALETTE.verdigrisLight,
+        );
+        halo.group.position.z = config.size * 0.12;
+        anchor.add(halo.group);
+
         const hitTarget = new THREE.Mesh(hitTargetGeometry, hitTargetMaterial);
         hitTarget.layers.set(1);
-        hitTarget.scale.setScalar(Math.max(config.size * 0.46, 0.24));
+        hitTarget.scale.setScalar(Math.max(config.size * 0.58, 0.31));
         hitTarget.userData.selection = {
           interactionId: config.interactionId,
           instanceId: config.instanceId,
@@ -567,8 +703,14 @@ function OrbitalSculpture() {
           anchor,
           spinner,
           config,
+          halo,
+          material,
+          spinAngle: 0,
           hoverAmount: 0,
           selectedAmount: 0,
+          quietAmount: 0,
+          activationAmount: 0,
+          isSelected: false,
         });
       });
 
@@ -577,6 +719,13 @@ function OrbitalSculpture() {
       lastFrameTime = performance.now();
       updateScene(0, shouldReduceMotion);
       renderer.render(scene, camera);
+
+      renderStaticSceneRef.current = () => {
+        if (!disposed && sceneReady) {
+          updateScene(0, true);
+          renderer.render(scene, camera);
+        }
+      };
       setModelState("ready");
     });
 
@@ -586,6 +735,7 @@ function OrbitalSculpture() {
 
     return () => {
       disposed = true;
+      renderStaticSceneRef.current = null;
       window.cancelAnimationFrame(animationFrame);
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
@@ -593,7 +743,7 @@ function OrbitalSculpture() {
       modelHost.removeEventListener("pointerleave", resetPointer);
       modelHost.removeEventListener("click", handleModelClick);
       scene.traverse((child) => {
-        if (child.isMesh) {
+        if (child.isMesh || child.isLine) {
           child.geometry?.dispose();
           const materials = Array.isArray(child.material) ? child.material : [child.material];
           materials.forEach((material) => {
@@ -611,10 +761,14 @@ function OrbitalSculpture() {
   return (
     <>
       <div
-        className={`orbital-model orbital-model--${modelState}`}
+        className={`orbital-model orbital-model--${modelState}${selection ? " has-selection" : ""}`}
         ref={modelHostRef}
         role="group"
-        aria-label="Interactive 3D portrait. Click any orbiting model to open its message."
+        aria-label={
+          selection
+            ? `Interactive 3D portrait. ${selection.modelName} is selected.`
+            : "Interactive 3D portrait. Click any orbiting model to select it and open its message."
+        }
       />
       {modelState === "ready" ? (
         <motion.button
@@ -670,9 +824,14 @@ function OrbitalSculpture() {
               >
                 <div className="orbit-panel-header">
                   <p className="orbit-panel-kicker">
-                    {isGuideOpen
-                      ? "Interactive sculpture"
-                      : `${activeMessage.category} / ${selection.modelName}`}
+                    {isGuideOpen ? (
+                      "Interactive sculpture"
+                    ) : (
+                      <>
+                        <span className="orbit-panel-selection-mark" aria-hidden="true" />
+                        Selected / {activeMessage.category} / {selection.modelName}
+                      </>
+                    )}
                   </p>
                   <button
                     aria-label="Close orbit panel"
@@ -724,6 +883,54 @@ function OrbitalSculpture() {
       ) : null}
     </>
   );
+}
+
+function createSelectionHalo(radius, color) {
+  const group = new THREE.Group();
+  group.visible = false;
+
+  const circlePoints = (circleRadius, startAngle = 0, endAngle = TAU, segments = 96) =>
+    Array.from({ length: segments + 1 }, (_, index) => {
+      const angle =
+        startAngle + ((endAngle - startAngle) * index) / segments;
+      return new THREE.Vector3(
+        Math.cos(angle) * circleRadius,
+        Math.sin(angle) * circleRadius,
+        0,
+      );
+    });
+
+  const createLineMaterial = () =>
+    new THREE.LineBasicMaterial({
+      color,
+      transparent: true,
+      opacity: 0,
+      depthTest: false,
+      depthWrite: false,
+      toneMapped: false,
+    });
+
+  const ring = new THREE.LineLoop(
+    new THREE.BufferGeometry().setFromPoints(circlePoints(radius)),
+    createLineMaterial(),
+  );
+  const arc = new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints(
+      circlePoints(radius * 1.12, -0.34, 1.38, 38),
+    ),
+    createLineMaterial(),
+  );
+  const pulse = new THREE.LineLoop(
+    new THREE.BufferGeometry().setFromPoints(circlePoints(radius * 0.92)),
+    createLineMaterial(),
+  );
+
+  ring.renderOrder = 10;
+  arc.renderOrder = 10;
+  pulse.renderOrder = 10;
+  group.add(ring, arc, pulse);
+
+  return { group, ring, arc, pulse };
 }
 
 function createDumbbellModel() {
@@ -860,8 +1067,8 @@ function ProfessionalExperience() {
           </div>
         </div>
         <div className="row-copy">
-          <p>At the CRA Enterprise Fraud Management Information Technology Branch, Jeffrey worked on mapping information between systems using XML and Java, contributing to enterprise-scale fraud-detection tooling.</p>
-          <p>Following the four-month internship, Jeffrey continues with the CRA from August 29 through December 29 on a part-time schedule of 20 hours per week while completing a full-time Computer Engineering course load at McGill.</p>
+          <p>At the CRA Enterprise Fraud Management Information Technology Branch, I worked on mapping information between systems using XML and Java, contributing to enterprise-scale fraud-detection tooling.</p>
+          <p>After completing my four-month internship, I am continuing with the CRA from August 29 through December 29, working part time for 20 hours per week while studying Computer Engineering full time at McGill.</p>
         </div>
       </Reveal>
     </section>

@@ -1,15 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap");
 
 :root {
-  --color-ink: #000000;
-  --color-soft-ink: #c8beb1;
-  --color-muted: #9d9284;
-  --color-paper: #f4efe6;
-  --color-paper-deep: #191816;
-  --color-line: #5b5044;
-  --color-line-strong: #d2b685;
-  --color-accent: #d13a32;
-  --color-gold: #d2a94c;
+  --color-ink: #070908;
+  --color-soft-ink: #c8c0b5;
+  --color-muted: #a59c90;
+  --color-paper: #f2ece2;
+  --color-paper-deep: #171917;
+  --color-line: #524f48;
+  --color-line-strong: #b9aa83;
+  --color-accent: #83bfae;
+  --color-gold: #c8a75f;
 
   --font-display: "Space Grotesk", "Arial Narrow", Arial, sans-serif;
   --font-sans: "IBM Plex Sans", Arial, sans-serif;
