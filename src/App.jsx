@@ -149,6 +149,27 @@ const hackathonProjects = [
   { name: "Ignition Hacks", context: "36h, online", description: "Game raising awareness about issues facing third-world countries.", href: "https://github.com/dwseoh/EduAtlas" },
 ];
 
+const DISHLY_LINKS = [
+  {
+    id: "website",
+    optionLabel: "Website",
+    linkLabel: "View website",
+    href: "https://dishly.brandonjameschoi.com/",
+  },
+  {
+    id: "github",
+    optionLabel: "GitHub",
+    linkLabel: "View GitHub repository",
+    href: "https://github.com/Jeffrey-dai17/CU-Hack",
+  },
+];
+
+const projectLinkMotion = {
+  enter: (direction) => ({ opacity: 0, y: direction * 12 }),
+  active: { opacity: 1, y: 0 },
+  exit: (direction) => ({ opacity: 0, y: direction * -12 }),
+};
+
 const hardwareBuilds = [
   "Custom claw machine with a gantry built to 3D-printer-level positional accuracy, controlled by 2 Arduinos.",
   "Brushed DC motor built using a 3D printer and household materials including paper clips and tin foil.",
@@ -183,6 +204,69 @@ function ArrowLink({ href, children, download = false }) {
       <span>{children}</span>
       <span aria-hidden="true">-&gt;</span>
     </a>
+  );
+}
+
+function ProjectLinkSwitcher() {
+  const shouldReduceMotion = useReducedMotion();
+  const [[activeIndex, direction], setActiveLink] = useState([0, 0]);
+  const activeLink = DISHLY_LINKS[activeIndex];
+
+  function selectLink(nextIndex) {
+    if (nextIndex === activeIndex) return;
+
+    setActiveLink([nextIndex, nextIndex > activeIndex ? 1 : -1]);
+  }
+
+  return (
+    <div className="project-link-switcher">
+      <div className="project-link-options" role="group" aria-label="Choose a Dishly project link">
+        {DISHLY_LINKS.map((link, index) => {
+          const isActive = activeIndex === index;
+
+          return (
+            <button
+              className="project-link-option"
+              type="button"
+              aria-pressed={isActive}
+              onClick={() => selectLink(index)}
+              key={link.id}
+            >
+              {isActive ? (
+                <motion.span
+                  className="project-link-selection"
+                  layoutId="dishly-link-selection"
+                  transition={shouldReduceMotion ? { duration: 0 } : { type: "spring", stiffness: 430, damping: 36 }}
+                  aria-hidden="true"
+                />
+              ) : null}
+              <span className="project-link-option-copy">{link.optionLabel}</span>
+            </button>
+          );
+        })}
+      </div>
+      <div className="project-link-stage">
+        <AnimatePresence initial={false} custom={direction}>
+          <motion.a
+            className="project-destination-link"
+            href={activeLink.href}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`${activeLink.linkLabel} (opens in a new tab)`}
+            key={activeLink.id}
+            custom={direction}
+            variants={projectLinkMotion}
+            initial={shouldReduceMotion ? false : "enter"}
+            animate="active"
+            exit="exit"
+            transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <span>{activeLink.linkLabel}</span>
+            <span className="project-destination-arrow" aria-hidden="true">-&gt;</span>
+          </motion.a>
+        </AnimatePresence>
+      </div>
+    </div>
   );
 }
 
@@ -1089,7 +1173,7 @@ function FeaturedProjects() {
           <p className="project-role">Full-Stack Developer</p>
           <p>Full-stack AI recipe-matching app that parses natural-language cravings into dietary and nutrition filters, fetches normalized recipe results, and presents them in a swipeable deck.</p>
           <p>Implemented Express API routes, provider integrations, session-based deck persistence, recipe detail flows, and automated test coverage across unit, API, and Playwright E2E tests.</p>
-          <ArrowLink href="https://github.com/Jeffrey-dai17/CU-Hack">View GitHub repository</ArrowLink>
+          <ProjectLinkSwitcher />
         </div>
         <div className="stack-panel" aria-label="Dishly technology stack">
           {["React", "Node.js", "Express", "Gemini API", "Spoonacular API"].map((item) => <span key={item}>{item}</span>)}
