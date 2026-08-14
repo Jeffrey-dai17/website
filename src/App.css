@@ -86,6 +86,7 @@
   position: relative;
   z-index: 2;
   display: grid;
+  min-width: 0;
   gap: var(--space-4);
   align-content: center;
 }
@@ -846,13 +847,15 @@
 
 @media (max-width: 760px) {
   .site-header {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: start;
   }
 
   .site-nav {
     grid-column: 1 / -1;
     order: 3;
+    width: 100%;
+    min-width: 0;
     justify-content: flex-start;
     gap: var(--space-4);
     overflow-x: auto;
