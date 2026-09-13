@@ -143,10 +143,10 @@ const GUIDE_SELECTIONS = Object.fromEntries(
 );
 
 const hackathonProjects = [
-  { name: "Code Jam 15", context: "McGill Engineering, 36h", description: "Minigames app including 2048, Snake, and Block Blast in one app.", href: "https://github.com/alex-wang55/CodeJam-Project" },
-  { name: "Hack the Hill 2", context: "uOttawa, 48h", description: "Wearable health monitor concept." },
-  { name: "Counterspell", context: "Shopify/Hack Club, 24h", description: "PvP game built during the hackathon.", href: "https://github.com/Jeffrey-dai17/Hawk.vs.Paul" },
-  { name: "Ignition Hacks", context: "36h, online", description: "Game raising awareness about issues facing third-world countries.", href: "https://github.com/dwseoh/EduAtlas" },
+  { name: "Code Jam 15", context: "McGill Engineering, 36h", description: "I helped build a minigames app combining 2048, Snake, and Block Blast.", href: "https://github.com/alex-wang55/CodeJam-Project" },
+  { name: "Hack the Hill 2", context: "uOttawa, 48h", description: "I developed a wearable health monitor concept." },
+  { name: "Counterspell", context: "Shopify/Hack Club, 24h", description: "I helped build a PvP game during the hackathon.", href: "https://github.com/Jeffrey-dai17/Hawk.vs.Paul" },
+  { name: "Ignition Hacks", context: "36h, online", description: "I helped build a game that raises awareness of issues facing developing countries.", href: "https://github.com/dwseoh/EduAtlas" },
 ];
 
 const DISHLY_LINKS = [
@@ -171,11 +171,11 @@ const projectLinkMotion = {
 };
 
 const hardwareBuilds = [
-  "Custom claw machine with a gantry built to 3D-printer-level positional accuracy, controlled by 2 Arduinos.",
-  "Brushed DC motor built using a 3D printer and household materials including paper clips and tin foil.",
+  "I built a custom claw machine with a gantry capable of 3D-printer-level positional accuracy and controlled it with two Arduinos.",
+  "I built a brushed DC motor with a 3D printer and household materials, including paper clips and tin foil.",
 ];
 
-const roboticsHighlights = ["2-time provincial finalist", "World Championship 2023 participant", "Drive Team Member", "Led small sub-teams"];
+const roboticsHighlights = ["I competed in two provincial finals", "I competed at the 2023 World Championship", "I served on the drive team", "I led small sub-teams"];
 const roboticsSkills = ["CAD", "3D printing", "Hand tools", "Power tools"];
 const chemECarSkills = ["PCB board design", "PCB soldering", "Motors", "Circuits"];
 
@@ -1118,7 +1118,7 @@ function Hero() {
       <Reveal className="hero-copy">
         <p className="section-eyebrow">Computer Engineering / McGill</p>
         <h1 id="hero-title">Jeffrey Dai</h1>
-        <p className="hero-subtitle">Building across software, robotics, and physical systems.</p>
+        <p className="hero-subtitle">I build across software, robotics, and physical systems.</p>
         <div className="hero-actions" aria-label="Contact and profile links">
           <ArrowLink href="resume.pdf" download="Jeffrey_Dai_Engineering_Resume.pdf">Download Resume (PDF)</ArrowLink>
           <ArrowLink href="mailto:jeffrey.dai@mail.mcgill.ca">Email</ArrowLink>
@@ -1171,8 +1171,8 @@ function FeaturedProjects() {
           <p className="project-label">Lead project - CUhacking, 36 hours</p>
           <h3>Dishly Recipe Match</h3>
           <p className="project-role">Full-Stack Developer</p>
-          <p>Full-stack AI recipe-matching app that parses natural-language cravings into dietary and nutrition filters, fetches normalized recipe results, and presents them in a swipeable deck.</p>
-          <p>Implemented Express API routes, provider integrations, session-based deck persistence, recipe detail flows, and automated test coverage across unit, API, and Playwright E2E tests.</p>
+          <p>I helped build a full-stack AI recipe-matching app that turns natural-language cravings into dietary and nutrition filters, fetches normalized recipe results, and presents them in a swipeable deck.</p>
+          <p>I implemented Express API routes, provider integrations, session-based deck persistence, recipe detail flows, and automated test coverage across unit, API, and Playwright E2E tests.</p>
           <ProjectLinkSwitcher />
         </div>
         <div className="stack-panel" aria-label="Dishly technology stack">
@@ -1226,8 +1226,8 @@ function CompetitiveRobotics() {
             <h3>Competition execution under pressure</h3>
           </div>
           <div className="row-copy">
-            <p>Jeffrey competed as a Drive Team Member and Mechanical Sub-team Member on FIRST Robotics Team 8729, contributing in a high-pressure team environment that reached two provincial finals and the 2023 World Championship.</p>
-            <p>He also gained experience leading small sub-teams, pairing competition-day execution with hands-on engineering delivery.</p>
+            <p>I competed as a Drive Team Member and Mechanical Sub-team Member on FIRST Robotics Team 8729. In that high-pressure team environment, we reached two provincial finals and the 2023 World Championship.</p>
+            <p>I also led small sub-teams, pairing competition-day execution with hands-on engineering delivery.</p>
           </div>
         </Reveal>
         <aside className="results-list" aria-label="Robotics highlights">
@@ -1255,16 +1255,16 @@ function AboutLeadership() {
         <Reveal className="leadership-block primary-leadership-block" as="article">
           <p className="project-label">2025-present</p>
           <h3>McHacks Experience Team Lead</h3>
-          <p>At McGill's largest hackathon, Jeffrey leads experience work for an event with 700 participants across 1500+ applications.</p>
+          <p>At McGill's largest hackathon, I lead experience work for an event with 700 participants across 1,500+ applications.</p>
           <ul>
-            <li>Led a team organizing and running workshops including intro to backend, intro to frontend, and adding AI chatbots to projects.</li>
-            <li>Coordinated with companies including Athena AI and Gumloop on workshops, organized team socials, and helped review McHacks applications.</li>
+            <li>I led a team that organized and ran workshops on backend and frontend development and adding AI chatbots to projects.</li>
+            <li>I coordinated workshops with companies including Athena AI and Gumloop, organized team socials, and helped review McHacks applications.</li>
           </ul>
         </Reveal>
         <Reveal className="leadership-block chem-block" as="article">
           <p className="project-label">2025-present</p>
           <h3>McGill Chem-E Car</h3>
-          <p>Electrical sub-team member.</p>
+          <p>I am an electrical sub-team member.</p>
           <div className="keyword-list" aria-label="Chem-E Car skills">
             {chemECarSkills.map((skill) => <span key={skill}>{skill}</span>)}
           </div>
@@ -1273,7 +1273,7 @@ function AboutLeadership() {
       <Reveal className="mindset-block" as="article">
         <p className="project-label">The Engineer's Mindset</p>
         <h3>Measured, iterative, and a little optimization-minded.</h3>
-        <p>Outside class and projects, Jeffrey brings the same analytical habits to tracking fitness macronutrients with a data-driven approach and designing highly optimized, automated resource systems in Minecraft.</p>
+        <p>Outside class and projects, I bring the same analytical habits to tracking my fitness macronutrients and designing highly optimized, automated resource systems in Minecraft.</p>
       </Reveal>
     </section>
   );
