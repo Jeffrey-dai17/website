@@ -38,14 +38,14 @@ const SCULPTURE_PALETTE = {
 };
 
 const MODEL_MESSAGES = {
-  "interest-bmw": { category: "Interest", title: "BMW X3", message: "a" },
-  "interest-keyboard": { category: "Interest", title: "Keyboard", message: "b" },
-  "interest-pig": { category: "Interest", title: "Pig", message: "c" },
-  "interest-sushi": { category: "Interest", title: "Sushi", message: "d" },
-  "interest-volleyball": { category: "Interest", title: "Volleyball", message: "e" },
-  "interest-dumbbell": { category: "Interest", title: "Dumbbell", message: "f" },
-  sens: { category: "Hockey", title: "Hockey players", message: "g" },
-  marvel: { category: "Marvel", title: "Marvel characters", message: "h" },
+  "interest-bmw": { category: "Interest", title: "BMW X3", message: "work in progress" },
+  "interest-keyboard": { category: "Interest", title: "Keyboard", message: "work in progress" },
+  "interest-pig": { category: "Interest", title: "Pig", message: "work in progress" },
+  "interest-sushi": { category: "Interest", title: "Sushi", message: "work in progress" },
+  "interest-volleyball": { category: "Interest", title: "Volleyball", message: "work in progress" },
+  "interest-dumbbell": { category: "Interest", title: "Dumbbell", message: "work in progress" },
+  sens: { category: "Hockey", title: "Hockey players", message: "work in progress" },
+  marvel: { category: "Marvel", title: "Marvel characters", message: "work in progress" },
 };
 
 const MODEL_MESSAGE_ORDER = [
