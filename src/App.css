@@ -636,10 +636,23 @@
   padding-top: var(--space-5);
 }
 
+.project-feature + .project-feature {
+  margin-top: var(--space-4);
+}
+
 .project-feature h3 {
   max-width: 11ch;
   color: var(--color-accent);
   font-size: 5.25rem;
+}
+
+.project-feature--chinatown {
+  border-top-color: var(--color-gold);
+}
+
+.project-feature--chinatown h3 {
+  max-width: 12ch;
+  color: var(--color-gold);
 }
 
 .project-role {
@@ -647,6 +660,27 @@
   font-family: var(--font-display);
   font-size: 1.2rem;
   font-weight: 700;
+}
+
+.project-main .project-access-note {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  color: var(--color-muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.45;
+  text-transform: uppercase;
+}
+
+.project-access-note::before {
+  width: 1.5rem;
+  height: 1px;
+  flex: 0 0 auto;
+  content: "";
+  background: var(--color-gold);
 }
 
 .project-link-switcher {
@@ -699,6 +733,10 @@
   background: var(--color-accent);
 }
 
+.project-feature--chinatown .project-link-selection {
+  background: var(--color-gold);
+}
+
 .project-link-option-copy {
   position: relative;
   z-index: 1;
@@ -736,6 +774,10 @@
   color: var(--color-accent);
 }
 
+.project-feature--chinatown .project-destination-link:hover {
+  color: var(--color-gold);
+}
+
 .project-destination-arrow {
   flex: 0 0 auto;
   transition: transform 180ms ease;
@@ -748,6 +790,11 @@
 .stack-panel {
   align-content: start;
   padding-top: 0.25rem;
+}
+
+.project-feature--chinatown .stack-panel span {
+  border-color: color-mix(in srgb, var(--color-gold) 62%, var(--color-line));
+  color: var(--color-gold);
 }
 
 .subsection-grid,

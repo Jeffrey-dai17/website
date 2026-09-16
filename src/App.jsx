@@ -149,6 +149,21 @@ const hackathonProjects = [
   { name: "Ignition Hacks", context: "36h, online", description: "I helped build a game that raises awareness of issues facing developing countries.", href: "https://github.com/dwseoh/EduAtlas" },
 ];
 
+const CHINATOWN_LINKS = [
+  {
+    id: "website",
+    optionLabel: "Live game",
+    linkLabel: "Open the live table",
+    href: "https://csuboardgame.onrender.com/",
+  },
+  {
+    id: "github",
+    optionLabel: "GitHub",
+    linkLabel: "View GitHub repository",
+    href: "https://github.com/Jeffrey-dai17/China-Town",
+  },
+];
+
 const DISHLY_LINKS = [
   {
     id: "website",
@@ -207,10 +222,10 @@ function ArrowLink({ href, children, download = false }) {
   );
 }
 
-function ProjectLinkSwitcher() {
+function ProjectLinkSwitcher({ links, projectName, switcherId }) {
   const shouldReduceMotion = useReducedMotion();
   const [[activeIndex, direction], setActiveLink] = useState([0, 0]);
-  const activeLink = DISHLY_LINKS[activeIndex];
+  const activeLink = links[activeIndex];
 
   function selectLink(nextIndex) {
     if (nextIndex === activeIndex) return;
@@ -220,8 +235,8 @@ function ProjectLinkSwitcher() {
 
   return (
     <div className="project-link-switcher">
-      <div className="project-link-options" role="group" aria-label="Choose a Dishly project link">
-        {DISHLY_LINKS.map((link, index) => {
+      <div className="project-link-options" role="group" aria-label={`Choose a ${projectName} project link`}>
+        {links.map((link, index) => {
           const isActive = activeIndex === index;
 
           return (
@@ -235,7 +250,7 @@ function ProjectLinkSwitcher() {
               {isActive ? (
                 <motion.span
                   className="project-link-selection"
-                  layoutId="dishly-link-selection"
+                  layoutId={`${switcherId}-link-selection`}
                   transition={shouldReduceMotion ? { duration: 0 } : { type: "spring", stiffness: 430, damping: 36 }}
                   aria-hidden="true"
                 />
@@ -1166,6 +1181,25 @@ function FeaturedProjects() {
         <p className="section-eyebrow">Featured Projects</p>
         <h2 id="projects-title">Software and hackathon builds</h2>
       </Reveal>
+      <Reveal className="project-feature project-feature--chinatown" as="article" aria-label="Chinatown Online project">
+        <div className="project-main">
+          <p className="project-label">Independent build - 3-5 player online game</p>
+          <h3>Chinatown Online</h3>
+          <p className="project-role">Creator &amp; Full-Stack Developer</p>
+          <p>I built a real-time browser adaptation of Chinatown so my friends and I could keep our board-game nights going after university took us to different cities.</p>
+          <p>The server-authoritative game runs the full table: private cash, dealing, live negotiations, trades, shop placement, income, reconnecting players, and final scoring across all six rounds.</p>
+          <p className="project-access-note">The live table is private for our group; the source is public.</p>
+          <ProjectLinkSwitcher
+            links={CHINATOWN_LINKS}
+            projectName="Chinatown Online"
+            switcherId="chinatown"
+          />
+        </div>
+        <div className="stack-panel" aria-label="Chinatown Online technology stack">
+          {["React", "Node.js", "Express", "Socket.IO", "Vitest", "Playwright"].map((item) => <span key={item}>{item}</span>)}
+        </div>
+      </Reveal>
+
       <Reveal className="project-feature" as="article" aria-label="Dishly Recipe Match project">
         <div className="project-main">
           <p className="project-label">Lead project - CUhacking, 36 hours</p>
@@ -1173,7 +1207,11 @@ function FeaturedProjects() {
           <p className="project-role">Full-Stack Developer</p>
           <p>I helped build a full-stack AI recipe-matching app that turns natural-language cravings into dietary and nutrition filters, fetches normalized recipe results, and presents them in a swipeable deck.</p>
           <p>I implemented Express API routes, provider integrations, session-based deck persistence, recipe detail flows, and automated test coverage across unit, API, and Playwright E2E tests.</p>
-          <ProjectLinkSwitcher />
+          <ProjectLinkSwitcher
+            links={DISHLY_LINKS}
+            projectName="Dishly Recipe Match"
+            switcherId="dishly"
+          />
         </div>
         <div className="stack-panel" aria-label="Dishly technology stack">
           {["React", "Node.js", "Express", "Gemini API", "Spoonacular API"].map((item) => <span key={item}>{item}</span>)}
