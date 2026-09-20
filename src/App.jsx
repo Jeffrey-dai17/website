@@ -38,12 +38,12 @@ const SCULPTURE_PALETTE = {
 };
 
 const MODEL_MESSAGES = {
-  "interest-bmw": { category: "Interest", title: "BMW X3", message: "work in progress" },
-  "interest-keyboard": { category: "Interest", title: "Keyboard", message: "work in progress" },
-  "interest-pig": { category: "Interest", title: "Pig", message: "work in progress" },
-  "interest-sushi": { category: "Interest", title: "Sushi", message: "work in progress" },
-  "interest-volleyball": { category: "Interest", title: "Volleyball", message: "work in progress" },
-  "interest-dumbbell": { category: "Interest", title: "Dumbbell", message: "work in progress" },
+  "interest-bmw": { category: "Interest", title: "BMW X3", message: "The car I first learned how to drive in." },
+  "interest-keyboard": { category: "Interest", title: "Keyboard", message: "Most underrated part of my setup. A good keyboard makes typing so much more enjoyable." },
+  "interest-pig": { category: "Interest", title: "Pig", message: "Zodiac animal, but I've adopted it to be a good luck charm." },
+  "interest-sushi": { category: "Interest", title: "Sushi", message: "Favourite food to get whether alone or with friends." },
+  "interest-volleyball": { category: "Interest", title: "Volleyball", message: "One of my favourite pastimes I can do with friends." },
+  "interest-dumbbell": { category: "Interest", title: "Dumbbell", message: "Staying in good shape helps with my mental health, keeping me more on track while working." },
   sens: { category: "Hockey", title: "Hockey players", message: "work in progress" },
   marvel: { category: "Marvel", title: "Marvel characters", message: "work in progress" },
 };
