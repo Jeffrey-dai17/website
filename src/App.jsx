@@ -1173,9 +1173,9 @@ function Hero() {
   return (
     <section className="hero-section" id="hero" aria-labelledby="hero-title">
       <Reveal className="hero-copy">
-        <p className="section-eyebrow">Computer Engineering / McGill</p>
-        <h1 id="hero-title">Jeffrey Dai</h1>
-        <p className="hero-subtitle">I build across software, robotics, and physical systems.</p>
+        <p className="section-eyebrow">Computer Engineering / McGill University</p>
+        <h1 id="hero-title"><span>Jeffrey</span><span>Dai</span></h1>
+        <p className="hero-subtitle">I build software people can share, robots that perform under pressure, and the systems between them.</p>
         <div className="hero-actions" aria-label="Contact and profile links">
           <ArrowLink href="resume.pdf" download="Jeffrey_Dai_Engineering_Resume.pdf">Download Resume (PDF)</ArrowLink>
           <ArrowLink href="mailto:jeffrey.dai@mail.mcgill.ca">Email</ArrowLink>
@@ -1196,7 +1196,7 @@ function ProfessionalExperience() {
   return (
     <section className="page-section experience-section" id="professional-experience" aria-labelledby="professional-experience-title">
       <Reveal className="section-heading">
-        <p className="section-eyebrow">Professional Experience</p>
+        <p className="section-eyebrow">01 / Professional experience</p>
         <h2 id="professional-experience-title">Canada Revenue Agency</h2>
       </Reveal>
       <Reveal className="feature-row" as="article" aria-label="CRA internship and part-time continuation">
@@ -1220,8 +1220,8 @@ function FeaturedProjects() {
   return (
     <section className="page-section projects-section" id="featured-projects" aria-labelledby="projects-title">
       <Reveal className="section-heading">
-        <p className="section-eyebrow">Featured Projects</p>
-        <h2 id="projects-title">Software and hackathon builds</h2>
+        <p className="section-eyebrow">02 / Selected work</p>
+        <h2 id="projects-title">Software, games, and fast builds</h2>
       </Reveal>
       <Reveal className="project-feature project-feature--chinatown project-spotlight" as="article" aria-label="Chinatown Online project">
         <div className="project-main project-spotlight-intro">
@@ -1335,14 +1335,14 @@ function CompetitiveRobotics() {
   return (
     <section className="page-section robotics-section" id="competitive-robotics" aria-labelledby="robotics-title">
       <Reveal className="section-heading">
-        <p className="section-eyebrow">Competitive Robotics</p>
-        <h2 id="robotics-title">FIRST Robotics Team 8729, &quot;Sparkling H2O&quot;</h2>
+        <p className="section-eyebrow">03 / Competitive robotics</p>
+        <h2 id="robotics-title">Built for the field, not the demo.</h2>
       </Reveal>
       <div className="robotics-layout">
         <Reveal className="feature-row robotics-main" as="article">
           <div className="row-meta">
-            <p className="project-label">2022-2025</p>
-            <h3>Competition execution under pressure</h3>
+            <p className="project-label">FIRST Team 8729 / Sparkling H2O / 2022-2025</p>
+            <h3>Drive team and mechanical sub-team</h3>
           </div>
           <div className="row-copy">
             <p>I competed as a Drive Team Member and Mechanical Sub-team Member on FIRST Robotics Team 8729. In that high-pressure team environment, we reached two provincial finals and the 2023 World Championship.</p>
@@ -1367,8 +1367,8 @@ function AboutLeadership() {
   return (
     <section className="page-section about-section" id="about-leadership" aria-labelledby="about-title">
       <Reveal className="section-heading">
-        <p className="section-eyebrow">About Me & Leadership</p>
-        <h2 id="about-title">Leadership, systems thinking, and builder habits</h2>
+        <p className="section-eyebrow">04 / About &amp; leadership</p>
+        <h2 id="about-title">Working with teams changed how I engineer.</h2>
       </Reveal>
       <div className="about-grid">
         <Reveal className="leadership-block primary-leadership-block" as="article">
@@ -1398,17 +1398,43 @@ function AboutLeadership() {
   );
 }
 
+function SiteFooter() {
+  return (
+    <footer className="site-footer">
+      <div className="footer-heading">
+        <p className="section-eyebrow">Contact / McGill / Montréal</p>
+        <h2>Have an engineering problem worth talking through?</h2>
+      </div>
+      <a className="footer-email" href="mailto:jeffrey.dai@mail.mcgill.ca">
+        <span>jeffrey.dai@mail.mcgill.ca</span>
+        <span aria-hidden="true">-&gt;</span>
+      </a>
+      <div className="footer-meta">
+        <p>Jeffrey Dai / Computer Engineering</p>
+        <nav aria-label="Footer navigation">
+          <a href="resume.pdf" download="Jeffrey_Dai_Engineering_Resume.pdf">Resume</a>
+          <a href="https://github.com/Jeffrey-dai17">GitHub</a>
+          <a href="https://www.linkedin.com/in/jeffrey-dai-3a9080319/">LinkedIn</a>
+          <a href="#hero">Back to top</a>
+        </nav>
+      </div>
+    </footer>
+  );
+}
+
 function App() {
   return (
     <MotionConfig reducedMotion="user">
+      <a className="skip-link" href="#main-content">Skip to content</a>
       <SiteHeader />
-      <main>
+      <main id="main-content">
         <Hero />
         <ProfessionalExperience />
         <FeaturedProjects />
         <CompetitiveRobotics />
         <AboutLeadership />
       </main>
+      <SiteFooter />
     </MotionConfig>
   );
 }

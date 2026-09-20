@@ -1,11 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
-  <title id="title">Jeffrey Dai portfolio preview placeholder</title>
-  <desc id="desc">Open Graph placeholder image for Jeffrey Dai's portfolio.</desc>
-  <rect width="1200" height="630" fill="#0b1020"/>
-  <path d="M0 120h1200M0 240h1200M0 360h1200M0 480h1200M160 0v630M320 0v630M480 0v630M640 0v630M800 0v630M960 0v630" stroke="#1f7a8c" stroke-opacity="0.24" stroke-width="2"/>
-  <rect x="92" y="112" width="1016" height="406" fill="#f7fafc"/>
-  <rect x="92" y="112" width="84" height="8" fill="#e6b44c"/>
-  <text x="150" y="286" fill="#0b1020" font-family="Inter, Segoe UI, sans-serif" font-size="82" font-weight="800">Jeffrey Dai</text>
-  <text x="154" y="360" fill="#1f7a8c" font-family="IBM Plex Mono, Consolas, monospace" font-size="34" font-weight="700">Computer Engineering Portfolio</text>
-  <text x="154" y="426" fill="#536171" font-family="Inter, Segoe UI, sans-serif" font-size="30">Computer Engineering student at McGill University</text>
+  <title id="title">Jeffrey Dai computer engineering portfolio</title>
+  <desc id="desc">An editorial cream and black portfolio card with Jeffrey Dai's name and an orbital engineering illustration.</desc>
+  <rect width="1200" height="630" fill="#f0e9dd"/>
+  <rect x="620" width="580" height="630" fill="#0a0d0b"/>
+  <line x1="620" y1="0" x2="620" y2="630" stroke="#9d4837" stroke-width="4"/>
+
+  <text x="72" y="82" fill="#9d4837" font-family="IBM Plex Mono, Consolas, monospace" font-size="18" font-weight="600" letter-spacing="2">COMPUTER ENGINEERING / MCGILL</text>
+  <text x="70" y="255" fill="#181b18" font-family="Georgia, Times New Roman, serif" font-size="126" font-weight="400" letter-spacing="-7">Jeffrey</text>
+  <text x="202" y="376" fill="#181b18" font-family="Georgia, Times New Roman, serif" font-size="132" font-style="italic" font-weight="400" letter-spacing="-7">Dai</text>
+  <line x1="72" y1="454" x2="548" y2="454" stroke="#a79d90"/>
+  <text x="72" y="498" fill="#5f5a52" font-family="Arial, sans-serif" font-size="24" font-weight="600">SOFTWARE / ROBOTICS / PHYSICAL SYSTEMS</text>
+  <text x="72" y="552" fill="#5f5a52" font-family="Arial, sans-serif" font-size="20">Projects made to work beyond the demo.</text>
+
+  <g transform="translate(910 315)" fill="none">
+    <circle r="212" stroke="#4b504a" stroke-width="2"/>
+    <circle r="150" stroke="#4b504a" stroke-width="2"/>
+    <circle r="88" stroke="#4b504a" stroke-width="2"/>
+    <path d="M0-36v94M-20 20h40M0 58l-26 54M0 58l27 54" stroke="#f0e9dd" stroke-width="8" stroke-linecap="square"/>
+    <circle cy="-68" r="24" fill="#f0e9dd" stroke="none"/>
+    <circle cx="-146" cy="-154" r="16" fill="#79b7a3" stroke="none"/>
+    <rect x="142" y="-84" width="28" height="28" fill="#d0a84f" stroke="none" transform="rotate(18 156 -70)"/>
+    <circle cx="-205" cy="54" r="13" fill="#9d4837" stroke="none"/>
+    <path d="M108 120h54v28h-54z" fill="#f0e9dd" stroke="none"/>
+    <path d="M-70 126l25 44h-50z" fill="#79b7a3" stroke="none"/>
+  </g>
+  <text x="1118" y="590" fill="#9c9489" font-family="IBM Plex Mono, Consolas, monospace" font-size="16" text-anchor="end">PORTFOLIO / 2026</text>
 </svg>

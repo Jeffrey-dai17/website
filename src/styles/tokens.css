@@ -1,18 +1,24 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Familjen+Grotesk:ital,wght@0,400..700;1,400..700&family=IBM+Plex+Mono:wght@500;600&family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&display=swap");
 
 :root {
-  --color-ink: #070908;
-  --color-soft-ink: #c8c0b5;
-  --color-muted: #a59c90;
-  --color-paper: #f2ece2;
-  --color-paper-deep: #171917;
-  --color-line: #524f48;
-  --color-line-strong: #b9aa83;
-  --color-accent: #83bfae;
-  --color-gold: #c8a75f;
+  --color-ink: #0a0d0b;
+  --color-ink-raised: #121714;
+  --color-soft-ink: #cbc3b7;
+  --color-muted: #9c9489;
+  --color-paper: #f0e9dd;
+  --color-paper-deep: #171c18;
+  --color-paper-ink: #181b18;
+  --color-paper-muted: #5f5a52;
+  --color-paper-line: #a79d90;
+  --color-line: #4b504a;
+  --color-line-strong: #c1b58f;
+  --color-accent: #79b7a3;
+  --color-gold: #d0a84f;
+  --color-rust: #9d4837;
+  --color-forest: #15372d;
 
-  --font-display: "Space Grotesk", "Arial Narrow", Arial, sans-serif;
-  --font-sans: "IBM Plex Sans", Arial, sans-serif;
+  --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+  --font-sans: "Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "IBM Plex Mono", "Cascadia Mono", Consolas, monospace;
 
   --page-gutter: 3.5rem;
