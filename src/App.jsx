@@ -149,21 +149,6 @@ const hackathonProjects = [
   { name: "Ignition Hacks", context: "36h, online", description: "I helped build a game that raises awareness of issues facing developing countries.", href: "https://github.com/dwseoh/EduAtlas" },
 ];
 
-const CHINATOWN_LINKS = [
-  {
-    id: "website",
-    optionLabel: "Live game",
-    linkLabel: "Open the live table",
-    href: "https://csuboardgame.onrender.com/",
-  },
-  {
-    id: "github",
-    optionLabel: "GitHub",
-    linkLabel: "View GitHub repository",
-    href: "https://github.com/Jeffrey-dai17/China-Town",
-  },
-];
-
 const DISHLY_LINKS = [
   {
     id: "website",
@@ -1181,23 +1166,62 @@ function FeaturedProjects() {
         <p className="section-eyebrow">Featured Projects</p>
         <h2 id="projects-title">Software and hackathon builds</h2>
       </Reveal>
-      <Reveal className="project-feature project-feature--chinatown" as="article" aria-label="Chinatown Online project">
-        <div className="project-main">
-          <p className="project-label">Independent build - 3-5 player online game</p>
+      <Reveal className="project-feature project-feature--chinatown project-spotlight" as="article" aria-label="Chinatown Online project">
+        <div className="project-main project-spotlight-intro">
+          <p className="project-label">Independent build / deployed on Render / 3-5 players</p>
           <h3>Chinatown Online</h3>
           <p className="project-role">Creator &amp; Full-Stack Developer</p>
-          <p>I built a real-time browser adaptation of Chinatown so my friends and I could keep our board-game nights going after university took us to different cities.</p>
-          <p>The server-authoritative game runs the full table: private cash, dealing, live negotiations, trades, shop placement, income, reconnecting players, and final scoring across all six rounds.</p>
-          <p className="project-access-note">The live table is private for our group; the source is public.</p>
-          <ProjectLinkSwitcher
-            links={CHINATOWN_LINKS}
-            projectName="Chinatown Online"
-            switcherId="chinatown"
-          />
         </div>
-        <div className="stack-panel" aria-label="Chinatown Online technology stack">
-          {["React", "Node.js", "Express", "Socket.IO", "Vitest", "Playwright"].map((item) => <span key={item}>{item}</span>)}
+
+        <a className="project-preview" href="https://csuboardgame.onrender.com/" target="_blank" rel="noreferrer" aria-label="Open the Chinatown Online live game in a new tab">
+          <div className="project-preview-bar">
+            <span>Live product / browser multiplayer</span>
+            <span>Open game -&gt;</span>
+          </div>
+          <img src={`${import.meta.env.BASE_URL}chinatown-preview.jpg`} alt="Canal Street 1965 game landing page with a new-table form over an illustrated Chinatown street" loading="lazy" />
+        </a>
+
+        <div className="project-main project-spotlight-story">
+          <p>I built a real-time browser adaptation of Chinatown so my friends and I could keep our board-game nights going after we left for different universities.</p>
+          <p>It turns the complete tabletop loop&mdash;dealing, private cash, open negotiation, trades, shop placement, income, and six rounds of scoring&mdash;into one shared online table.</p>
+          <div className="project-spotlight-links" aria-label="Chinatown Online project links">
+            <a className="project-spotlight-link project-spotlight-link--primary" href="https://csuboardgame.onrender.com/" target="_blank" rel="noreferrer">
+              <span>Visit the live game</span>
+              <span aria-hidden="true">-&gt;</span>
+            </a>
+            <a className="project-spotlight-link" href="https://github.com/Jeffrey-dai17/China-Town" target="_blank" rel="noreferrer">
+              <span>Read the source</span>
+              <span aria-hidden="true">-&gt;</span>
+            </a>
+          </div>
+          <p className="project-access-note">The hosted table is password-gated for our group; the repository is public.</p>
         </div>
+
+        <div className="project-engineering" aria-label="Chinatown Online engineering highlights">
+          <div>
+            <p className="project-evidence-label">Real-time architecture</p>
+            <p>A server-authoritative Node and Socket.IO engine keeps every player's turn phase, property, shop tile, trade, and cash balance in sync.</p>
+          </div>
+          <div>
+            <p className="project-evidence-label">Private state &amp; resilience</p>
+            <p>Server-side access control protects the table, while browser-held reconnect tokens let players reclaim their seat after ordinary connection drops.</p>
+          </div>
+          <div>
+            <p className="project-evidence-label">Tested multiplayer flow</p>
+            <p>Vitest covers the game rules, and a Playwright smoke test drives three isolated players through dealing, a trade, placement, income, and the next round.</p>
+          </div>
+        </div>
+
+        <dl className="project-skill-ledger">
+          <div>
+            <dt>Technology</dt>
+            <dd>React / JavaScript / Node.js / Express / Socket.IO / Vite / Vitest / Playwright / Render</dd>
+          </div>
+          <div>
+            <dt>Skills demonstrated</dt>
+            <dd>Real-time systems / game-state modeling / authentication / reconnect handling / responsive UI / unit and end-to-end testing</dd>
+          </div>
+        </dl>
       </Reveal>
 
       <Reveal className="project-feature" as="article" aria-label="Dishly Recipe Match project">
