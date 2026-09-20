@@ -74,11 +74,41 @@ const MODEL_MESSAGES = {
     title: "Dumbbell",
     message: "Staying in good shape helps with my mental health, keeping me more on track while working.",
   },
-  sens: {
+  "hockey-stutzle": {
     orbit: "Middle orbit",
     category: "Hockey",
-    title: "Hockey players",
-    message: "work in progress",
+    title: "Tim Stützle",
+    message: "Favourite player and the first jersey I ever owned.",
+  },
+  "hockey-cozens": {
+    orbit: "Middle orbit",
+    category: "Hockey",
+    title: "Dylan Cozens",
+    message: "To me, one of the most underrated players in the league.",
+  },
+  "hockey-eklund": {
+    orbit: "Middle orbit",
+    category: "Hockey",
+    title: "William Eklund",
+    message: "Going to be better than Tkachuk.",
+  },
+  "hockey-sanderson": {
+    orbit: "Middle orbit",
+    category: "Hockey",
+    title: "Jake Sanderson",
+    message: "Another favourite—so fun to watch. I also own his jersey.",
+  },
+  "hockey-ullmark": {
+    orbit: "Middle orbit",
+    category: "Hockey",
+    title: "Linus Ullmark",
+    message: "The team isn't the same when Ullmark isn't playing.",
+  },
+  "hockey-chabot": {
+    orbit: "Middle orbit",
+    category: "Hockey",
+    title: "Thomas Chabot",
+    message: "The first signed jersey I ever owned.",
   },
   marvel: {
     orbit: "Inner orbit",
@@ -95,7 +125,12 @@ const MODEL_MESSAGE_ORDER = [
   "interest-sushi",
   "interest-volleyball",
   "interest-dumbbell",
-  "sens",
+  "hockey-stutzle",
+  "hockey-cozens",
+  "hockey-eklund",
+  "hockey-sanderson",
+  "hockey-ullmark",
+  "hockey-chabot",
   "marvel",
 ];
 
@@ -121,7 +156,6 @@ const ORBIT_GROUPS = [
   },
   {
     id: "sens",
-    interactionId: "sens",
     radius: 2.4,
     depth: 0.42,
     depthPhase: 1.15,
@@ -131,12 +165,12 @@ const ORBIT_GROUPS = [
     opacity: 0.22,
     phaseOffset: 0.52,
     models: [
-      { name: "Tim Stutzle", url: timStutzleModelUrl, size: 0.74, spin: 0.42, front: -1.5 },
-      { name: "Cuzzy", url: cuzzyModelUrl, size: 0.71, spin: -0.39, front: -1.5 },
-      { name: "Eklund", url: eklundModelUrl, size: 0.73, spin: 0.37, front: -1.5 },
-      { name: "Jake Sanderson", url: jakeSandersonModelUrl, size: 0.72, spin: -0.4, front: -1.5 },
-      { name: "Linus Ullmark", url: linusUllmarkModelUrl, size: 0.75, spin: 0.41, front: -1.5 },
-      { name: "Thomas Chabot", url: thomasChabotModelUrl, size: 0.72, spin: -0.36, front: -1.5 },
+      { name: "Tim Stützle", interactionId: "hockey-stutzle", url: timStutzleModelUrl, size: 0.74, spin: 0.42, front: -1.5 },
+      { name: "Dylan Cozens", interactionId: "hockey-cozens", url: cuzzyModelUrl, size: 0.71, spin: -0.39, front: -1.5 },
+      { name: "William Eklund", interactionId: "hockey-eklund", url: eklundModelUrl, size: 0.73, spin: 0.37, front: -1.5 },
+      { name: "Jake Sanderson", interactionId: "hockey-sanderson", url: jakeSandersonModelUrl, size: 0.72, spin: -0.4, front: -1.5 },
+      { name: "Linus Ullmark", interactionId: "hockey-ullmark", url: linusUllmarkModelUrl, size: 0.75, spin: 0.41, front: -1.5 },
+      { name: "Thomas Chabot", interactionId: "hockey-chabot", url: thomasChabotModelUrl, size: 0.72, spin: -0.36, front: -1.5 },
     ],
   },
   {
@@ -975,8 +1009,9 @@ function OrbitalSculpture() {
                 {isGuideOpen ? (
                   <div className="orbit-guide-body">
                     <p className="orbit-guide-copy">
-                      Click a sculpture as it passes. Each interest has its own note;
-                      hockey and Marvel share one message each.
+                      Click a sculpture as it passes. The Ottawa Senators are my
+                      favourite team, and every player in the hockey orbit has a story.
+                      The Marvel characters share one note.
                     </p>
                     <div className="orbit-model-shortcuts" aria-label="Model message shortcuts">
                       {MODEL_MESSAGE_ORDER.map((interactionId) => (
