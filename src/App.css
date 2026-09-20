@@ -308,13 +308,13 @@
   bottom: var(--space-4);
   left: var(--space-4);
   display: grid;
-  gap: var(--space-3);
-  width: min(19.5rem, calc(100% - 2rem));
-  padding: var(--space-4);
+  width: min(28rem, calc(100% - 2rem));
+  max-height: calc(100% - 2rem);
+  overflow: hidden;
   border: 1px solid var(--color-line);
-  border-top: 2px solid var(--color-accent);
+  border-top: 3px solid var(--color-accent);
   background: #0d1110;
-  box-shadow: 0 20px 52px rgb(0 0 0 / 46%);
+  box-shadow: 0 24px 64px rgb(0 0 0 / 52%);
 }
 
 .orbit-panel--guide {
@@ -324,32 +324,43 @@
 
 .orbit-panel-content {
   display: grid;
-  gap: var(--space-3);
+  min-height: 0;
+  overflow: hidden;
 }
 
 .orbit-panel-header {
   display: flex;
-  gap: var(--space-3);
+  min-height: 4.5rem;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-4);
+  padding: 0.75rem 0.75rem 0.75rem 1.4rem;
+  border-bottom: 1px solid var(--color-line);
+  background: #121614;
 }
 
 .orbit-panel-kicker {
   display: inline-flex;
-  gap: var(--space-2);
+  min-width: 0;
+  flex-wrap: wrap;
   align-items: center;
+  gap: var(--space-2);
   margin: 0;
   color: var(--color-gold);
   font-family: var(--font-mono);
-  font-size: 0.67rem;
+  font-size: 0.66rem;
   font-weight: 600;
-  letter-spacing: 0.055em;
-  line-height: 1.3;
+  letter-spacing: 0.065em;
+  line-height: 1.35;
   text-transform: uppercase;
 }
 
 .orbit-panel:not(.orbit-panel--guide) .orbit-panel-kicker {
   color: var(--color-accent);
+}
+
+.orbit-panel-separator {
+  color: var(--color-muted);
 }
 
 .orbit-panel-selection-mark {
@@ -393,6 +404,15 @@
   stroke-width: 1.5;
 }
 
+.orbit-guide-body {
+  display: grid;
+  min-height: 0;
+  gap: var(--space-4);
+  overflow-y: auto;
+  padding: 1.25rem;
+  overscroll-behavior: contain;
+}
+
 .orbit-guide-copy,
 .orbit-message-copy {
   margin: 0;
@@ -402,18 +422,78 @@
   max-width: 39ch;
   color: var(--color-soft-ink);
   font-size: 0.92rem;
-  line-height: 1.55;
+  line-height: 1.6;
+}
+
+.orbit-message-body {
+  display: grid;
+  min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 1rem;
+  padding: 1.35rem 1.5rem 1.5rem;
+}
+
+.orbit-message-heading {
+  display: grid;
+  grid-template-columns: auto minmax(2.5rem, 1fr);
+  align-items: end;
+  gap: var(--space-4);
+}
+
+.orbit-message-heading h2 {
+  margin: 0;
+  color: var(--color-paper);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 650;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+}
+
+.orbit-message-heading > span {
+  height: 1px;
+  margin-bottom: 0.28rem;
+  background: var(--color-line);
+}
+
+.orbit-message-scroll {
+  min-height: 0;
+  max-height: min(11rem, 30svh);
+  overflow-y: auto;
+  padding-right: 0.9rem;
+  overscroll-behavior: contain;
+  scrollbar-color: var(--color-accent) #202521;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+}
+
+.orbit-message-scroll:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.orbit-message-scroll::-webkit-scrollbar {
+  width: 0.42rem;
+}
+
+.orbit-message-scroll::-webkit-scrollbar-track {
+  background: #202521;
+}
+
+.orbit-message-scroll::-webkit-scrollbar-thumb {
+  border: 1px solid #202521;
+  background: var(--color-accent);
 }
 
 .orbit-message-copy {
-  color: var(--color-paper);
-  font-family: var(--font-display);
-  font-size: clamp(2.25rem, 5vw, 3.75rem);
-  font-weight: 600;
-  line-height: 1.05;
-  letter-spacing: -0.035em;
+  max-width: 38ch;
+  color: var(--color-soft-ink);
+  font-family: var(--font-sans);
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.62;
 }
-
 .orbit-model-shortcuts {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1300,7 +1380,39 @@
     bottom: var(--space-3);
     left: var(--space-3);
     width: calc(100% - 1.5rem);
-    padding: var(--space-3);
+    max-height: calc(100% - 1.5rem);
+  }
+
+  .orbit-panel-header {
+    min-height: 4rem;
+    padding: 0.6rem 0.6rem 0.6rem 1rem;
+  }
+
+  .orbit-guide-body,
+  .orbit-message-body {
+    padding: 1rem;
+  }
+
+  .orbit-message-body {
+    gap: 0.8rem;
+  }
+
+  .orbit-message-heading {
+    gap: var(--space-3);
+  }
+
+  .orbit-message-heading h2 {
+    font-size: clamp(1.7rem, 8vw, 2.15rem);
+  }
+
+  .orbit-message-scroll {
+    max-height: min(8.5rem, 31svh);
+    padding-right: 0.65rem;
+  }
+
+  .orbit-message-copy {
+    font-size: 0.98rem;
+    line-height: 1.58;
   }
 
   .orbit-guide-copy {

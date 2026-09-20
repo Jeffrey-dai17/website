@@ -38,14 +38,54 @@ const SCULPTURE_PALETTE = {
 };
 
 const MODEL_MESSAGES = {
-  "interest-bmw": { category: "Interest", title: "BMW X3", message: "The car I first learned how to drive in." },
-  "interest-keyboard": { category: "Interest", title: "Keyboard", message: "Most underrated part of my setup. A good keyboard makes typing so much more enjoyable." },
-  "interest-pig": { category: "Interest", title: "Pig", message: "Zodiac animal, but I've adopted it to be a good luck charm." },
-  "interest-sushi": { category: "Interest", title: "Sushi", message: "Favourite food to get whether alone or with friends." },
-  "interest-volleyball": { category: "Interest", title: "Volleyball", message: "One of my favourite pastimes I can do with friends." },
-  "interest-dumbbell": { category: "Interest", title: "Dumbbell", message: "Staying in good shape helps with my mental health, keeping me more on track while working." },
-  sens: { category: "Hockey", title: "Hockey players", message: "work in progress" },
-  marvel: { category: "Marvel", title: "Marvel characters", message: "work in progress" },
+  "interest-bmw": {
+    orbit: "Outer orbit",
+    category: "Interest",
+    title: "BMW X3",
+    message: "The car I first learned how to drive in.",
+  },
+  "interest-keyboard": {
+    orbit: "Outer orbit",
+    category: "Interest",
+    title: "Keyboard",
+    message: "Most underrated part of my setup. A good keyboard makes typing so much more enjoyable.",
+  },
+  "interest-pig": {
+    orbit: "Outer orbit",
+    category: "Interest",
+    title: "Pig",
+    message: "Zodiac animal, but I've adopted it to be a good luck charm.",
+  },
+  "interest-sushi": {
+    orbit: "Outer orbit",
+    category: "Interest",
+    title: "Sushi",
+    message: "Favourite food to get whether alone or with friends.",
+  },
+  "interest-volleyball": {
+    orbit: "Outer orbit",
+    category: "Interest",
+    title: "Volleyball",
+    message: "One of my favourite pastimes I can do with friends.",
+  },
+  "interest-dumbbell": {
+    orbit: "Outer orbit",
+    category: "Interest",
+    title: "Dumbbell",
+    message: "Staying in good shape helps with my mental health, keeping me more on track while working.",
+  },
+  sens: {
+    orbit: "Middle orbit",
+    category: "Hockey",
+    title: "Hockey players",
+    message: "work in progress",
+  },
+  marvel: {
+    orbit: "Inner orbit",
+    category: "Marvel",
+    title: "Marvel characters",
+    message: "work in progress",
+  },
 };
 
 const MODEL_MESSAGE_ORDER = [
@@ -880,7 +920,9 @@ function OrbitalSculpture() {
         {isGuideOpen || activeMessage ? (
           <motion.aside
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            aria-label={isGuideOpen ? "How to explore the 3D models" : "Selected model message"}
+            aria-describedby={isGuideOpen ? undefined : "orbit-message-description"}
+            aria-label={isGuideOpen ? "How to explore the 3D models" : undefined}
+            aria-labelledby={isGuideOpen ? undefined : "orbit-message-title"}
             className={`orbit-panel${isGuideOpen ? " orbit-panel--guide" : ""}`}
             exit={{ opacity: 0, scale: 0.99, y: 8 }}
             id="orbit-interaction-panel"
@@ -913,7 +955,9 @@ function OrbitalSculpture() {
                     ) : (
                       <>
                         <span className="orbit-panel-selection-mark" aria-hidden="true" />
-                        Selected / {activeMessage.category} / {selection.modelName}
+                        <span>{activeMessage.orbit}</span>
+                        <span className="orbit-panel-separator" aria-hidden="true">/</span>
+                        <span>{activeMessage.category}</span>
                       </>
                     )}
                   </p>
@@ -929,7 +973,7 @@ function OrbitalSculpture() {
                   </button>
                 </div>
                 {isGuideOpen ? (
-                  <>
+                  <div className="orbit-guide-body">
                     <p className="orbit-guide-copy">
                       Click a sculpture as it passes. Each interest has its own note;
                       hockey and Marvel share one message each.
@@ -945,11 +989,24 @@ function OrbitalSculpture() {
                         </button>
                       ))}
                     </div>
-                  </>
+                  </div>
                 ) : (
-                  <p className="orbit-message-copy" aria-live="polite">
-                    {activeMessage.message}
-                  </p>
+                  <div className="orbit-message-body" aria-live="polite">
+                    <div className="orbit-message-heading">
+                      <h2 id="orbit-message-title">{activeMessage.title}</h2>
+                      <span aria-hidden="true" />
+                    </div>
+                    <div
+                      aria-label={`About ${activeMessage.title}`}
+                      className="orbit-message-scroll"
+                      role="region"
+                      tabIndex={0}
+                    >
+                      <p className="orbit-message-copy" id="orbit-message-description">
+                        {activeMessage.message}
+                      </p>
+                    </div>
+                  </div>
                 )}
               </motion.div>
             </AnimatePresence>
