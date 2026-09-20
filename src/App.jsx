@@ -1173,12 +1173,12 @@ function Hero() {
   return (
     <section className="hero-section" id="hero" aria-labelledby="hero-title">
       <Reveal className="hero-copy">
-        <p className="section-eyebrow">Computer Engineering / McGill University</p>
+        <p className="section-eyebrow">McGill Computer Engineering / Montreal + Ottawa</p>
         <h1 id="hero-title"><span>Jeffrey</span><span>Dai</span></h1>
-        <p className="hero-subtitle">I build software people can share, robots that perform under pressure, and the systems between them.</p>
+        <p className="hero-subtitle">I build multiplayer software, competition robots, and the less glamorous systems work that keeps both usable.</p>
         <div className="hero-actions" aria-label="Contact and profile links">
-          <ArrowLink href="resume.pdf" download="Jeffrey_Dai_Engineering_Resume.pdf">Download Resume (PDF)</ArrowLink>
-          <ArrowLink href="mailto:jeffrey.dai@mail.mcgill.ca">Email</ArrowLink>
+          <ArrowLink href="resume.pdf" download="Jeffrey_Dai_Engineering_Resume.pdf">Read resume (PDF)</ArrowLink>
+          <ArrowLink href="mailto:jeffrey.dai@mail.mcgill.ca">Send email</ArrowLink>
           <ArrowLink href="https://github.com/Jeffrey-dai17">GitHub</ArrowLink>
           <ArrowLink href="https://www.linkedin.com/in/jeffrey-dai-3a9080319/">LinkedIn</ArrowLink>
         </div>
@@ -1196,8 +1196,8 @@ function ProfessionalExperience() {
   return (
     <section className="page-section experience-section" id="professional-experience" aria-labelledby="professional-experience-title">
       <Reveal className="section-heading">
-        <p className="section-eyebrow">01 / Professional experience</p>
-        <h2 id="professional-experience-title">Canada Revenue Agency</h2>
+        <p className="section-eyebrow">01 / Enterprise work</p>
+        <h2 id="professional-experience-title">Public-sector systems at CRA</h2>
       </Reveal>
       <Reveal className="feature-row" as="article" aria-label="CRA internship and part-time continuation">
         <div className="row-meta">
@@ -1336,7 +1336,7 @@ function CompetitiveRobotics() {
     <section className="page-section robotics-section" id="competitive-robotics" aria-labelledby="robotics-title">
       <Reveal className="section-heading">
         <p className="section-eyebrow">03 / Competitive robotics</p>
-        <h2 id="robotics-title">Built for the field, not the demo.</h2>
+        <h2 id="robotics-title">Built for competition day, not the demo.</h2>
       </Reveal>
       <div className="robotics-layout">
         <Reveal className="feature-row robotics-main" as="article">
@@ -1368,7 +1368,7 @@ function AboutLeadership() {
     <section className="page-section about-section" id="about-leadership" aria-labelledby="about-title">
       <Reveal className="section-heading">
         <p className="section-eyebrow">04 / About &amp; leadership</p>
-        <h2 id="about-title">Working with teams changed how I engineer.</h2>
+        <h2 id="about-title">Teams taught me how to build in public.</h2>
       </Reveal>
       <div className="about-grid">
         <Reveal className="leadership-block primary-leadership-block" as="article">
