@@ -27,14 +27,14 @@ const TAU = Math.PI * 2;
 const JEFF_FRONT_ANGLE = -Math.PI / 2;
 
 const SCULPTURE_PALETTE = {
-  carbon: 0x050505,
-  porcelain: 0xf8f8f4,
-  porcelainHover: 0xffffff,
-  quietPorcelain: 0xb7b7af,
-  verdigris: 0xd71913,
+  carbon: 0x171512,
+  porcelain: 0xf2eadc,
+  porcelainHover: 0xfff8ee,
+  quietPorcelain: 0xa99a87,
+  verdigris: 0xad3326,
   verdigrisLight: 0xff8a80,
-  verdigrisEmissive: 0x420a06,
-  terracotta: 0xd71913,
+  verdigrisEmissive: 0x36100c,
+  terracotta: 0xad3326,
 };
 
 const MODEL_MESSAGES = {
@@ -107,7 +107,7 @@ const ORBIT_GROUPS = [
     depthPhase: 2.35,
     revealOrder: 2,
     speed: 0.11,
-    color: 0xd71913,
+    color: 0xad3326,
     opacity: 0.34,
     phaseOffset: 0.62,
     models: [
@@ -1076,7 +1076,7 @@ function createSelectionHalo(radius, color) {
 
 function createDumbbellModel() {
   const model = new THREE.Group();
-  const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  const material = new THREE.MeshStandardMaterial({ color: SCULPTURE_PALETTE.porcelain });
   const handle = new THREE.Mesh(
     new THREE.CylinderGeometry(0.085, 0.085, 1.7, 18),
     material,

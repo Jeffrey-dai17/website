@@ -1,14 +1,14 @@
 :root {
-  --poster-black: #050505;
-  --poster-ink: #111111;
-  --poster-white: #fbfbf7;
-  --poster-white-soft: #efefea;
-  --poster-red: #d71913;
-  --poster-red-dark: #b81710;
-  --poster-gray: #6f6f68;
-  --poster-gray-2: #a7a7a0;
-  --poster-line: #d7d7d0;
-  --poster-line-dark: #2c2c2a;
+  --poster-black: #171512;
+  --poster-ink: #242018;
+  --poster-white: #f2eadc;
+  --poster-white-soft: #e4d7c4;
+  --poster-red: #ad3326;
+  --poster-red-dark: #7f241c;
+  --poster-gray: #695f53;
+  --poster-gray-2: #a99a87;
+  --poster-line: #c8bba8;
+  --poster-line-dark: #4a4035;
 
   --color-ink: var(--poster-black);
   --color-ink-raised: #151515;
@@ -722,7 +722,7 @@ button:focus-visible,
 .robotics-section {
   --section-bg: var(--poster-black);
   --section-fg: var(--poster-white);
-  --section-muted: #c4c4bd;
+  --section-muted: #cbbda8;
   --section-line: var(--poster-white);
   --section-accent: var(--poster-red);
 }
@@ -1244,7 +1244,7 @@ button:focus-visible,
 }
 
 .about-section .mindset-block p:not(.project-label) {
-  color: #d9d9d3;
+  color: #d8cbb8;
 }
 
 .site-footer {
