@@ -27,14 +27,14 @@ const TAU = Math.PI * 2;
 const JEFF_FRONT_ANGLE = -Math.PI / 2;
 
 const SCULPTURE_PALETTE = {
-  carbon: 0x070908,
-  porcelain: 0xe7dfd2,
-  porcelainHover: 0xf7f1e8,
-  quietPorcelain: 0xaaa49a,
-  verdigris: 0x83bfae,
-  verdigrisLight: 0xb8ded4,
-  verdigrisEmissive: 0x173f36,
-  terracotta: 0xc35b4e,
+  carbon: 0x050505,
+  porcelain: 0xf8f8f4,
+  porcelainHover: 0xffffff,
+  quietPorcelain: 0xb7b7af,
+  verdigris: 0xd71913,
+  verdigrisLight: 0xff8a80,
+  verdigrisEmissive: 0x420a06,
+  terracotta: 0xd71913,
 };
 
 const MODEL_MESSAGES = {
@@ -107,8 +107,8 @@ const ORBIT_GROUPS = [
     depthPhase: 2.35,
     revealOrder: 2,
     speed: 0.11,
-    color: 0xd2a94c,
-    opacity: 0.28,
+    color: 0xd71913,
+    opacity: 0.34,
     phaseOffset: 0.62,
     models: [
       { name: "BMW X3", interactionId: "interest-bmw", url: interestBmwModelUrl, size: 0.7, spin: 0.28, front: 0.2, tilt: -0.18 },
@@ -128,7 +128,7 @@ const ORBIT_GROUPS = [
     revealOrder: 1,
     speed: -0.17,
     color: 0xf4efe6,
-    opacity: 0.13,
+    opacity: 0.22,
     phaseOffset: 0.52,
     models: [
       { name: "Tim Stutzle", url: timStutzleModelUrl, size: 0.74, spin: 0.42, front: -1.5 },
