@@ -1,226 +1,29 @@
-import "./App.css";
+import softwareResumeUrl from "../Jeffrey_Dai_Software_Resume.pdf?url";
 
-import { useEffect, useRef, useState } from "react";
+import { Component, lazy, Suspense, useState } from "react";
 import { AnimatePresence, MotionConfig, motion, useReducedMotion } from "motion/react";
-import * as THREE from "three";
-import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import cuzzyModelUrl from "./assets/models/cuzzy.glb?url";
-import eklundModelUrl from "./assets/models/eklund.glb?url";
-import interestBmwModelUrl from "./assets/models/interest-bmw.glb?url";
-import interestKeyboardModelUrl from "./assets/models/interest-keyboard.glb?url";
-import interestPigModelUrl from "./assets/models/interest-pig.glb?url";
-import interestSushiModelUrl from "./assets/models/interest-sushi.glb?url";
-import interestVolleyballModelUrl from "./assets/models/interest-volleyball.glb?url";
-import jakeSandersonModelUrl from "./assets/models/jake-sanderson.glb?url";
-import jeffModelUrl from "./assets/models/jeff-center.glb?url";
-import linusUllmarkModelUrl from "./assets/models/linus-ullmark.glb?url";
-import marvelCaptainAmericaModelUrl from "./assets/models/marvel-captain-america.glb?url";
-import marvelDeadpoolModelUrl from "./assets/models/marvel-deadpool.glb?url";
-import marvelIronManModelUrl from "./assets/models/marvel-iron-man.glb?url";
-import marvelSpiderManModelUrl from "./assets/models/marvel-spider-man.glb?url";
-import marvelVenomModelUrl from "./assets/models/marvel-venom.glb?url";
-import thomasChabotModelUrl from "./assets/models/thomas-chabot.glb?url";
-import timStutzleModelUrl from "./assets/models/tim-stutzle.glb?url";
 
-const TAU = Math.PI * 2;
-const JEFF_FRONT_ANGLE = -Math.PI / 2;
+const OrbitalSculpture = lazy(() => import("./OrbitalSculpture.jsx"));
 
-const SCULPTURE_PALETTE = {
-  carbon: 0x171512,
-  porcelain: 0xf2eadc,
-  porcelainHover: 0xfff8ee,
-  quietPorcelain: 0xa99a87,
-  verdigris: 0xad3326,
-  verdigrisLight: 0xff8a80,
-  verdigrisEmissive: 0x36100c,
-  terracotta: 0xad3326,
-};
+class OrbitBoundary extends Component {
+  state = { failed: false };
 
-const MODEL_MESSAGES = {
-  "interest-bmw": {
-    orbit: "Outer orbit",
-    category: "Interest",
-    title: "BMW X3",
-    message: "The car I first learned how to drive in.",
-  },
-  "interest-keyboard": {
-    orbit: "Outer orbit",
-    category: "Interest",
-    title: "Keyboard",
-    message: "Most underrated part of my setup. A good keyboard makes typing so much more enjoyable.",
-  },
-  "interest-pig": {
-    orbit: "Outer orbit",
-    category: "Interest",
-    title: "Pig",
-    message: "Zodiac animal, but I've adopted it to be a good luck charm.",
-  },
-  "interest-sushi": {
-    orbit: "Outer orbit",
-    category: "Interest",
-    title: "Sushi",
-    message: "Favourite food to get whether alone or with friends.",
-  },
-  "interest-volleyball": {
-    orbit: "Outer orbit",
-    category: "Interest",
-    title: "Volleyball",
-    message: "One of my favourite pastimes I can do with friends.",
-  },
-  "interest-dumbbell": {
-    orbit: "Outer orbit",
-    category: "Interest",
-    title: "Dumbbell",
-    message: "Staying in good shape helps with my mental health, keeping me more on track while working.",
-  },
-  "hockey-stutzle": {
-    orbit: "Middle orbit",
-    category: "Hockey",
-    title: "Tim Stützle",
-    message: "Favourite player and the first jersey I ever owned.",
-  },
-  "hockey-cozens": {
-    orbit: "Middle orbit",
-    category: "Hockey",
-    title: "Dylan Cozens",
-    message: "To me, one of the most underrated players in the league.",
-  },
-  "hockey-eklund": {
-    orbit: "Middle orbit",
-    category: "Hockey",
-    title: "William Eklund",
-    message: "Going to be better than Tkachuk.",
-  },
-  "hockey-sanderson": {
-    orbit: "Middle orbit",
-    category: "Hockey",
-    title: "Jake Sanderson",
-    message: "Another favourite—so fun to watch. I also own his jersey.",
-  },
-  "hockey-ullmark": {
-    orbit: "Middle orbit",
-    category: "Hockey",
-    title: "Linus Ullmark",
-    message: "The team isn't the same when Ullmark isn't playing.",
-  },
-  "hockey-chabot": {
-    orbit: "Middle orbit",
-    category: "Hockey",
-    title: "Thomas Chabot",
-    message: "The first signed jersey I ever owned.",
-  },
-  marvel: {
-    orbit: "Inner orbit",
-    category: "Marvel",
-    title: "Marvel characters",
-    message: "work in progress",
-  },
-};
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
 
-const MODEL_MESSAGE_ORDER = [
-  "interest-bmw",
-  "interest-keyboard",
-  "interest-pig",
-  "interest-sushi",
-  "interest-volleyball",
-  "interest-dumbbell",
-  "hockey-stutzle",
-  "hockey-cozens",
-  "hockey-eklund",
-  "hockey-sanderson",
-  "hockey-ullmark",
-  "hockey-chabot",
-  "marvel",
-];
-
-const ORBIT_GROUPS = [
-  {
-    id: "interest",
-    radius: 3.12,
-    depth: 0.52,
-    depthPhase: 2.35,
-    revealOrder: 2,
-    speed: 0.11,
-    color: 0xad3326,
-    opacity: 0.34,
-    phaseOffset: 0.62,
-    models: [
-      { name: "BMW X3", interactionId: "interest-bmw", url: interestBmwModelUrl, size: 0.7, spin: 0.28, front: 0.2, tilt: -0.18 },
-      { name: "Keyboard", interactionId: "interest-keyboard", url: interestKeyboardModelUrl, size: 0.62, spin: -0.31, front: 0.1, tilt: -0.52 },
-      { name: "Pig", interactionId: "interest-pig", url: interestPigModelUrl, size: 0.64, spin: 0.36, front: -1.2 },
-      { name: "Sushi", interactionId: "interest-sushi", url: interestSushiModelUrl, size: 0.6, spin: -0.3, front: 0, tilt: -0.34 },
-      { name: "Volleyball", interactionId: "interest-volleyball", url: interestVolleyballModelUrl, size: 0.46, spin: 0.42, front: 0 },
-      { name: "Dumbbell", interactionId: "interest-dumbbell", create: createDumbbellModel, size: 0.58, spin: -0.38, front: 0.2, tilt: -0.18 },
-    ],
-  },
-  {
-    id: "sens",
-    radius: 2.4,
-    depth: 0.42,
-    depthPhase: 1.15,
-    revealOrder: 1,
-    speed: -0.17,
-    color: 0xf4efe6,
-    opacity: 0.22,
-    phaseOffset: 0.52,
-    models: [
-      { name: "Tim Stützle", interactionId: "hockey-stutzle", url: timStutzleModelUrl, size: 0.74, spin: 0.42, front: -1.5 },
-      { name: "Dylan Cozens", interactionId: "hockey-cozens", url: cuzzyModelUrl, size: 0.71, spin: -0.39, front: -1.5 },
-      { name: "William Eklund", interactionId: "hockey-eklund", url: eklundModelUrl, size: 0.73, spin: 0.37, front: -1.5 },
-      { name: "Jake Sanderson", interactionId: "hockey-sanderson", url: jakeSandersonModelUrl, size: 0.72, spin: -0.4, front: -1.5 },
-      { name: "Linus Ullmark", interactionId: "hockey-ullmark", url: linusUllmarkModelUrl, size: 0.75, spin: 0.41, front: -1.5 },
-      { name: "Thomas Chabot", interactionId: "hockey-chabot", url: thomasChabotModelUrl, size: 0.72, spin: -0.36, front: -1.5 },
-    ],
-  },
-  {
-    id: "marvel",
-    interactionId: "marvel",
-    radius: 1.68,
-    depth: 0.32,
-    depthPhase: 0,
-    revealOrder: 0,
-    speed: 0.2,
-    color: SCULPTURE_PALETTE.terracotta,
-    opacity: 0.26,
-    phaseOffset: 0,
-    models: [
-      { name: "Captain America", url: marvelCaptainAmericaModelUrl, size: 0.8, spin: 0.27, front: 0 },
-      { name: "Deadpool", url: marvelDeadpoolModelUrl, size: 0.8, spin: -0.3, front: 0 },
-      { name: "Iron Man", url: marvelIronManModelUrl, size: 0.82, spin: 0.29, front: 0 },
-      { name: "Spider-Man", url: marvelSpiderManModelUrl, size: 0.84, spin: -0.32, front: 0 },
-      { name: "Venom", url: marvelVenomModelUrl, size: 0.88, spin: 0.26, front: 0 },
-    ],
-  },
-];
-
-const ORBITING_MODELS = ORBIT_GROUPS.flatMap((group, groupIndex) =>
-  group.models.map((model, modelIndex) => ({
-    ...model,
-    path: groupIndex,
-    groupIndex,
-    modelIndex,
-    instanceId: `${group.id}-${modelIndex}`,
-    interactionId: model.interactionId ?? group.interactionId,
-    phase: group.phaseOffset + (modelIndex / group.models.length) * TAU,
-  })),
-);
-
-const GUIDE_SELECTIONS = Object.fromEntries(
-  MODEL_MESSAGE_ORDER.map((interactionId) => {
-    const model = ORBITING_MODELS.find(
-      (orbiter) => orbiter.interactionId === interactionId,
-    );
-
-    return [interactionId, model];
-  }),
-);
+  render() {
+    return this.state.failed
+      ? <p className="orbital-model-error">Portrait view / interactive scene unavailable</p>
+      : this.props.children;
+  }
+}
 
 const hackathonProjects = [
-  { name: "Code Jam 15", context: "McGill Engineering, 36h", description: "I helped build a minigames app combining 2048, Snake, and Block Blast.", href: "https://github.com/alex-wang55/CodeJam-Project" },
-  { name: "Hack the Hill 2", context: "uOttawa, 48h", description: "I developed a wearable health monitor concept." },
-  { name: "Counterspell", context: "Shopify/Hack Club, 24h", description: "I helped build a PvP game during the hackathon.", href: "https://github.com/Jeffrey-dai17/Hawk.vs.Paul" },
-  { name: "Ignition Hacks", context: "36h, online", description: "I helped build a game that raises awareness of issues facing developing countries.", href: "https://github.com/dwseoh/EduAtlas" },
+  { name: "In Class Bored Games", context: "Code Jam 15", description: "A unified minigame app featuring 2048, Snake, and Block Blast.", href: "https://github.com/alex-wang55/CodeJam-Project" },
+  { name: "Serenity", context: "Hack the Hill II", description: "An Arduino health-monitor concept developed during the hackathon." },
+  { name: "PvP Game", context: "Counterspell", description: "A player-versus-player game built during the hackathon.", href: "https://github.com/Jeffrey-dai17/Hawk.vs.Paul" },
+  { name: "EduAtlas", context: "Ignition Hacks", description: "A Java education game built during the hackathon.", href: "https://github.com/dwseoh/EduAtlas" },
 ];
 
 const DISHLY_LINKS = [
@@ -245,13 +48,17 @@ const projectLinkMotion = {
 };
 
 const hardwareBuilds = [
-  "I built a custom claw machine with a gantry capable of 3D-printer-level positional accuracy and controlled it with two Arduinos.",
-  "I built a brushed DC motor with a 3D printer and household materials, including paper clips and tin foil.",
+  "I designed and built a claw machine with a 3D-printer-style gantry controlled by two Arduinos.",
+  "I wrote the control code for three stepper motors: two for gantry movement and one for the claw.",
 ];
 
-const roboticsHighlights = ["I competed in two provincial finals", "I competed at the 2023 World Championship", "I served on the drive team", "I led small sub-teams"];
-const roboticsSkills = ["CAD", "3D printing", "Hand tools", "Power tools"];
-const chemECarSkills = ["PCB board design", "PCB soldering", "Motors", "Circuits"];
+const skillGroups = [
+  { label: "Languages", items: "JavaScript / Java / Python / C / C++ / Bash / VHDL" },
+  { label: "Web & testing", items: "React / Node.js / Express / Socket.IO / Playwright" },
+  { label: "Developer tools", items: "Git / Azure DevOps / Jira / VS Code / SSH / Claude / Render" },
+  { label: "APIs & data", items: "Gemini API / Spoonacular API / XML / JSON" },
+  { label: "Embedded & hardware", items: "Arduino / stepper motors / PCB design / 3D printing" },
+];
 
 const revealMotion = {
   initial: { opacity: 0, y: 22 },
@@ -344,851 +151,6 @@ function ProjectLinkSwitcher({ links, projectName, switcherId }) {
   );
 }
 
-function OrbitalSculpture() {
-  const shouldReduceMotion = useReducedMotion();
-  const modelHostRef = useRef(null);
-  const selectionRef = useRef(null);
-  const renderStaticSceneRef = useRef(null);
-  const [modelState, setModelState] = useState("loading");
-  const [selection, setSelection] = useState(null);
-  const [isGuideOpen, setIsGuideOpen] = useState(false);
-  const activeMessage = selection
-    ? MODEL_MESSAGES[selection.interactionId]
-    : null;
-
-  useEffect(() => {
-    selectionRef.current = selection;
-
-    if (shouldReduceMotion) {
-      renderStaticSceneRef.current?.();
-    }
-  }, [selection, shouldReduceMotion]);
-
-  useEffect(() => {
-    if (!selection && !isGuideOpen) {
-      return undefined;
-    }
-
-    const closeOnEscape = (event) => {
-      if (event.key === "Escape") {
-        setSelection(null);
-        setIsGuideOpen(false);
-      }
-    };
-
-    window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [isGuideOpen, selection]);
-
-  const closePanel = () => {
-    setSelection(null);
-    setIsGuideOpen(false);
-  };
-
-  const selectFromGuide = (interactionId) => {
-    const model = GUIDE_SELECTIONS[interactionId];
-
-    setSelection({
-      interactionId,
-      instanceId: model?.instanceId ?? null,
-      modelName: model?.name ?? MODEL_MESSAGES[interactionId].title,
-    });
-    setIsGuideOpen(false);
-  };
-
-  useEffect(() => {
-    const modelHost = modelHostRef.current;
-
-    if (!modelHost) {
-      return undefined;
-    }
-
-    let animationFrame = 0;
-    let disposed = false;
-    let renderer;
-    let sceneReady = false;
-    let sceneVisible = true;
-    let elapsed = 0;
-    let lastFrameTime = performance.now();
-
-    try {
-      renderer = new THREE.WebGLRenderer({
-        alpha: true,
-        antialias: true,
-        powerPreference: "high-performance",
-      });
-    } catch {
-      setModelState("error");
-      return undefined;
-    }
-
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.08;
-    renderer.setClearColor(0x000000, 0);
-    renderer.domElement.className = "orbital-model-canvas";
-    renderer.domElement.setAttribute("aria-hidden", "true");
-    modelHost.appendChild(renderer.domElement);
-
-    const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(SCULPTURE_PALETTE.carbon, 0.03);
-
-    const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
-    camera.position.set(0, 0, 14);
-
-    const sculpture = new THREE.Group();
-    scene.add(sculpture);
-
-    scene.add(new THREE.HemisphereLight(0xfff7ec, 0x101216, 1.9));
-
-    const keyLight = new THREE.DirectionalLight(0xfff8ed, 3.5);
-    keyLight.position.set(4.2, 5.4, 6.2);
-    scene.add(keyLight);
-
-    const fillLight = new THREE.DirectionalLight(0xb9c8d2, 1.25);
-    fillLight.position.set(-4.8, 1.4, 3.2);
-    scene.add(fillLight);
-
-    const rimLight = new THREE.DirectionalLight(SCULPTURE_PALETTE.terracotta, 2.1);
-    rimLight.position.set(-3.8, 3.2, -5.5);
-    scene.add(rimLight);
-
-    const warmRimLight = new THREE.PointLight(0xd2a94c, 8.5, 12, 2);
-    warmRimLight.position.set(3.4, -1.8, 2.6);
-    scene.add(warmRimLight);
-
-    const porcelainColor = new THREE.Color(SCULPTURE_PALETTE.porcelain);
-    const porcelainHoverColor = new THREE.Color(SCULPTURE_PALETTE.porcelainHover);
-    const quietPorcelainColor = new THREE.Color(SCULPTURE_PALETTE.quietPorcelain);
-    const selectedColor = new THREE.Color(SCULPTURE_PALETTE.verdigris);
-    const selectedEmissiveColor = new THREE.Color(SCULPTURE_PALETTE.verdigrisEmissive);
-    const workingMaterialColor = new THREE.Color();
-    const hitTargetGeometry = new THREE.SphereGeometry(1, 10, 8);
-    const hitTargetMaterial = new THREE.MeshBasicMaterial({
-      colorWrite: false,
-      depthWrite: false,
-    });
-
-    const orbitPathData = ORBIT_GROUPS;
-
-    const orbitLines = orbitPathData.map((path) => {
-      const points = [];
-      for (let index = 0; index < 180; index += 1) {
-        const angle = (index / 180) * Math.PI * 2;
-        points.push(
-          new THREE.Vector3(
-            Math.cos(angle) * path.radius,
-            Math.sin(angle) * path.radius,
-            0,
-          ),
-        );
-      }
-
-      const line = new THREE.LineLoop(
-        new THREE.BufferGeometry().setFromPoints(points),
-        new THREE.LineBasicMaterial({
-          color: path.color,
-          transparent: true,
-          opacity: 0,
-          depthWrite: false,
-        }),
-      );
-      sculpture.add(line);
-      return {
-        line,
-        revealOrder: path.revealOrder,
-        targetOpacity: path.opacity,
-      };
-    });
-
-    const pointerTarget = new THREE.Vector2();
-    const pointerCurrent = new THREE.Vector2();
-    const interactionPointer = new THREE.Vector2();
-    const raycaster = new THREE.Raycaster();
-    raycaster.layers.set(1);
-    const orbiters = [];
-    const clickTargets = [];
-    const workingPosition = new THREE.Vector3();
-    let hoveredInstanceId = null;
-    let centralRig = null;
-
-    const resizeModel = () => {
-      const width = Math.max(modelHost.clientWidth, 1);
-      const height = Math.max(modelHost.clientHeight, 1);
-
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, width < 600 ? 1.35 : 1.7));
-      renderer.setSize(width, height, false);
-      camera.aspect = width / height;
-      camera.position.z = camera.aspect < 0.76 ? 16.2 : camera.aspect < 1.05 ? 14.6 : 13.6;
-      camera.updateProjectionMatrix();
-      renderer.render(scene, camera);
-    };
-
-    const resizeObserver = new ResizeObserver(resizeModel);
-    resizeObserver.observe(modelHost);
-    resizeModel();
-
-    const intersectionObserver = new IntersectionObserver(
-      ([entry]) => {
-        sceneVisible = entry.isIntersecting;
-      },
-      { threshold: 0.02 },
-    );
-    intersectionObserver.observe(modelHost);
-
-    const pickInteraction = (event) => {
-      const bounds = modelHost.getBoundingClientRect();
-      interactionPointer.set(
-        THREE.MathUtils.clamp(((event.clientX - bounds.left) / bounds.width) * 2 - 1, -1, 1),
-        THREE.MathUtils.clamp(-((event.clientY - bounds.top) / bounds.height) * 2 + 1, -1, 1),
-      );
-      sculpture.updateMatrixWorld(true);
-      raycaster.setFromCamera(interactionPointer, camera);
-
-      return raycaster.intersectObjects(clickTargets, false)[0]?.object.userData.selection ?? null;
-    };
-
-    const handlePointerMove = (event) => {
-      if (!shouldReduceMotion) {
-        const bounds = modelHost.getBoundingClientRect();
-        pointerTarget.set(
-          THREE.MathUtils.clamp(((event.clientX - bounds.left) / bounds.width) * 2 - 1, -1, 1),
-          THREE.MathUtils.clamp(((event.clientY - bounds.top) / bounds.height) * 2 - 1, -1, 1),
-        );
-      }
-
-      const hoveredSelection = sceneReady ? pickInteraction(event) : null;
-      hoveredInstanceId = hoveredSelection?.instanceId ?? null;
-
-      if (shouldReduceMotion) {
-        renderStaticSceneRef.current?.();
-      }
-      modelHost.classList.toggle("is-model-hovered", Boolean(hoveredSelection));
-    };
-
-    const handleModelClick = (event) => {
-      if (!sceneReady) {
-        return;
-      }
-
-      const nextSelection = pickInteraction(event);
-      if (!nextSelection) {
-        return;
-      }
-
-      setSelection((currentSelection) =>
-        currentSelection?.instanceId === nextSelection.instanceId
-          ? null
-          : nextSelection,
-      );
-      setIsGuideOpen(false);
-    };
-
-    const resetPointer = () => {
-      pointerTarget.set(0, 0);
-      hoveredInstanceId = null;
-
-      if (shouldReduceMotion) {
-        renderStaticSceneRef.current?.();
-      }
-      modelHost.classList.remove("is-model-hovered");
-    };
-
-    modelHost.addEventListener("pointermove", handlePointerMove);
-    modelHost.addEventListener("pointerleave", resetPointer);
-    modelHost.addEventListener("click", handleModelClick);
-
-    const updateScene = (delta, staticFrame = false) => {
-      if (!centralRig) {
-        return;
-      }
-
-      if (!staticFrame) {
-        elapsed += delta;
-      }
-
-      const centralReveal = staticFrame
-        ? 1
-        : easeOutQuint(THREE.MathUtils.clamp(elapsed / 1.45, 0, 1));
-      const pointerDamping = 1 - Math.exp(-delta * 4.8);
-
-      pointerCurrent.lerp(pointerTarget, staticFrame ? 1 : pointerDamping);
-
-      centralRig.scale.setScalar(THREE.MathUtils.lerp(0.78, 1, centralReveal));
-      centralRig.position.y = THREE.MathUtils.lerp(-0.18, 0, centralReveal);
-      centralRig.rotation.y =
-        JEFF_FRONT_ANGLE + (staticFrame ? 0 : pointerCurrent.x * 0.07);
-      centralRig.rotation.x = staticFrame ? 0 : -pointerCurrent.y * 0.035;
-
-      orbitLines.forEach(({ line, revealOrder, targetOpacity }) => {
-        const lineReveal = staticFrame
-          ? 1
-          : easeOutQuint(
-            THREE.MathUtils.clamp((elapsed - 0.28 - revealOrder * 0.12) / 1.35, 0, 1),
-          );
-        line.material.opacity = targetOpacity * lineReveal;
-      });
-
-      orbiters.forEach((orbiter) => {
-        const path = orbitPathData[orbiter.config.path];
-        const reveal = staticFrame
-          ? 1
-          : easeOutQuint(
-            THREE.MathUtils.clamp(
-              (
-                elapsed -
-                0.46 -
-                path.revealOrder * 0.18 -
-                orbiter.config.modelIndex * 0.07
-              ) / 1.08,
-              0,
-              1,
-            ),
-          );
-        const orbitElapsed = staticFrame ? 0 : elapsed;
-        const angle = orbiter.config.phase + orbitElapsed * path.speed;
-
-        workingPosition
-          .set(
-            Math.cos(angle) * path.radius,
-            Math.sin(angle) * path.radius,
-            Math.sin(angle + path.depthPhase) * path.depth,
-          );
-
-        const hoverTarget = hoveredInstanceId === orbiter.config.instanceId ? 1 : 0;
-        const selectedTarget =
-          selectionRef.current?.instanceId === orbiter.config.instanceId ? 1 : 0;
-        const quietTarget =
-          selectionRef.current?.instanceId && !selectedTarget ? 1 : 0;
-        const interactionDamping = staticFrame ? 1 : 1 - Math.exp(-delta * 10);
-        const selectionDamping = staticFrame ? 1 : 1 - Math.exp(-delta * 7.2);
-
-        if (Boolean(selectedTarget) !== orbiter.isSelected) {
-          orbiter.isSelected = Boolean(selectedTarget);
-          orbiter.activationAmount = selectedTarget ? 1 : 0;
-        }
-
-        orbiter.hoverAmount = THREE.MathUtils.lerp(
-          orbiter.hoverAmount,
-          hoverTarget,
-          interactionDamping,
-        );
-        orbiter.selectedAmount = THREE.MathUtils.lerp(
-          orbiter.selectedAmount,
-          selectedTarget,
-          selectionDamping,
-        );
-        orbiter.quietAmount = THREE.MathUtils.lerp(
-          orbiter.quietAmount,
-          quietTarget,
-          selectionDamping,
-        );
-
-        if (staticFrame) {
-          orbiter.activationAmount = 0;
-        } else {
-          orbiter.activationAmount = Math.max(
-            0,
-            orbiter.activationAmount - delta * 1.55,
-          );
-        }
-
-        const selectedEase = THREE.MathUtils.smoothstep(
-          orbiter.selectedAmount,
-          0,
-          1,
-        );
-        const activationProgress = 1 - orbiter.activationAmount;
-        const activationPulse =
-          Math.sin(activationProgress * Math.PI) * orbiter.activationAmount;
-        const hoverScale = orbiter.hoverAmount * (selectedTarget ? 0.025 : 0.065);
-
-        orbiter.anchor.position.copy(workingPosition);
-        orbiter.anchor.position.z += selectedEase * 0.22;
-        orbiter.anchor.scale.setScalar(
-          Math.max(
-            0.001,
-            reveal * (1 + hoverScale + selectedEase * 0.145 + activationPulse * 0.035),
-          ),
-        );
-
-        if (!staticFrame) {
-          orbiter.spinAngle +=
-            delta *
-            orbiter.config.spin *
-            THREE.MathUtils.lerp(1, 0.2, selectedEase);
-        }
-
-        orbiter.spinner.rotation.y =
-          orbiter.config.front +
-          orbiter.spinAngle +
-          (
-            staticFrame
-              ? 0
-              : Math.sin(elapsed * 0.9 + orbiter.config.phase) * 0.045 * selectedEase
-          );
-
-        workingMaterialColor
-          .copy(porcelainColor)
-          .lerp(quietPorcelainColor, orbiter.quietAmount * 0.38)
-          .lerp(
-            porcelainHoverColor,
-            orbiter.hoverAmount * 0.34 * (1 - selectedEase),
-          )
-          .lerp(selectedColor, selectedEase);
-
-        orbiter.material.color.copy(workingMaterialColor);
-        orbiter.material.emissive.copy(selectedEmissiveColor);
-        orbiter.material.emissiveIntensity = selectedEase * 0.32;
-        orbiter.material.metalness = THREE.MathUtils.lerp(0.04, 0.18, selectedEase);
-        orbiter.material.roughness = THREE.MathUtils.lerp(0.52, 0.34, selectedEase);
-
-        orbiter.halo.group.visible =
-          selectedEase > 0.002 || orbiter.activationAmount > 0.002;
-        orbiter.halo.group.scale.setScalar(0.9 + selectedEase * 0.1);
-        orbiter.halo.ring.material.opacity = selectedEase * 0.48;
-        orbiter.halo.arc.material.opacity = selectedEase * 0.92;
-        orbiter.halo.pulse.material.opacity = activationPulse * 0.72;
-        orbiter.halo.pulse.scale.setScalar(1 + activationProgress * 0.42);
-
-        if (!staticFrame) {
-          orbiter.halo.arc.rotation.z += delta * 0.28 * selectedEase;
-          orbiter.halo.ring.rotation.z -= delta * 0.08 * selectedEase;
-        }
-      });
-
-    };
-
-    const animate = (frameTime) => {
-      if (disposed) {
-        return;
-      }
-
-      animationFrame = window.requestAnimationFrame(animate);
-
-      if (!sceneReady || !sceneVisible || document.hidden) {
-        lastFrameTime = frameTime;
-        return;
-      }
-
-      const delta = Math.min((frameTime - lastFrameTime) / 1000, 0.05);
-      lastFrameTime = frameTime;
-      updateScene(delta);
-      renderer.render(scene, camera);
-    };
-
-    const loader = new GLTFLoader();
-    loader.setMeshoptDecoder(MeshoptDecoder);
-
-    const loadModel = (url) =>
-      new Promise((resolve, reject) => {
-        loader.load(url, resolve, undefined, reject);
-      });
-
-    Promise.allSettled([
-      loadModel(jeffModelUrl),
-      ...ORBITING_MODELS.map((model) =>
-        model.url
-          ? loadModel(model.url)
-          : Promise.resolve().then(() => ({ scene: model.create() })),
-      ),
-    ]).then((results) => {
-      if (disposed) {
-        results.forEach((result) => {
-          if (result.status === "fulfilled") {
-            disposeObject(result.value.scene);
-          }
-        });
-        return;
-      }
-
-      const [centralResult, ...orbiterResults] = results;
-      if (centralResult.status !== "fulfilled") {
-        orbiterResults.forEach((result) => {
-          if (result.status === "fulfilled") {
-            disposeObject(result.value.scene);
-          }
-        });
-        setModelState("error");
-        return;
-      }
-
-      centralRig = new THREE.Group();
-      centralRig.add(centerAndScaleModel(centralResult.value.scene, 3.12));
-      sculpture.add(centralRig);
-
-      orbiterResults.forEach((result, index) => {
-        if (result.status !== "fulfilled") {
-          return;
-        }
-
-        const config = ORBITING_MODELS[index];
-        const material = new THREE.MeshStandardMaterial({
-          color: SCULPTURE_PALETTE.porcelain,
-          emissive: SCULPTURE_PALETTE.verdigrisEmissive,
-          emissiveIntensity: 0,
-          metalness: 0.04,
-          roughness: 0.52,
-        });
-        replaceMaterials(result.value.scene, material);
-
-        const anchor = new THREE.Group();
-        const spinner = new THREE.Group();
-        spinner.rotation.x = config.tilt ?? 0;
-        spinner.add(centerAndScaleModel(result.value.scene, config.size, "max"));
-        anchor.add(spinner);
-
-        const halo = createSelectionHalo(
-          config.size * 0.7,
-          SCULPTURE_PALETTE.verdigrisLight,
-        );
-        halo.group.position.z = config.size * 0.12;
-        anchor.add(halo.group);
-
-        const hitTarget = new THREE.Mesh(hitTargetGeometry, hitTargetMaterial);
-        hitTarget.layers.set(1);
-        hitTarget.scale.setScalar(Math.max(config.size * 0.58, 0.31));
-        hitTarget.userData.selection = {
-          interactionId: config.interactionId,
-          instanceId: config.instanceId,
-          modelName: config.name,
-        };
-        anchor.add(hitTarget);
-        clickTargets.push(hitTarget);
-        sculpture.add(anchor);
-
-        orbiters.push({
-          anchor,
-          spinner,
-          config,
-          halo,
-          material,
-          spinAngle: 0,
-          hoverAmount: 0,
-          selectedAmount: 0,
-          quietAmount: 0,
-          activationAmount: 0,
-          isSelected: false,
-        });
-      });
-
-      sceneReady = true;
-      elapsed = 0;
-      lastFrameTime = performance.now();
-      updateScene(0, shouldReduceMotion);
-      renderer.render(scene, camera);
-
-      renderStaticSceneRef.current = () => {
-        if (!disposed && sceneReady) {
-          updateScene(0, true);
-          renderer.render(scene, camera);
-        }
-      };
-      setModelState("ready");
-    });
-
-    if (!shouldReduceMotion) {
-      animationFrame = window.requestAnimationFrame(animate);
-    }
-
-    return () => {
-      disposed = true;
-      renderStaticSceneRef.current = null;
-      window.cancelAnimationFrame(animationFrame);
-      resizeObserver.disconnect();
-      intersectionObserver.disconnect();
-      modelHost.removeEventListener("pointermove", handlePointerMove);
-      modelHost.removeEventListener("pointerleave", resetPointer);
-      modelHost.removeEventListener("click", handleModelClick);
-      scene.traverse((child) => {
-        if (child.isMesh || child.isLine) {
-          child.geometry?.dispose();
-          const materials = Array.isArray(child.material) ? child.material : [child.material];
-          materials.forEach((material) => {
-            material?.map?.dispose();
-            material?.dispose();
-          });
-        }
-      });
-      renderer.dispose();
-      renderer.forceContextLoss();
-      renderer.domElement.remove();
-    };
-  }, [shouldReduceMotion]);
-
-  return (
-    <>
-      <div
-        className={`orbital-model orbital-model--${modelState}${selection ? " has-selection" : ""}`}
-        ref={modelHostRef}
-        role="group"
-        aria-label={
-          selection
-            ? `Interactive 3D portrait. ${selection.modelName} is selected.`
-            : "Interactive 3D portrait. Click any orbiting model to select it and open its message."
-        }
-      />
-      {modelState === "ready" ? (
-        <motion.button
-          aria-controls="orbit-interaction-panel"
-          aria-expanded={isGuideOpen}
-          className="orbit-guide-button"
-          onClick={() => {
-            setSelection(null);
-            setIsGuideOpen((isOpen) => !isOpen);
-          }}
-          type="button"
-          whileHover={{ y: -2 }}
-          whileTap={{ scale: 0.985 }}
-        >
-          <span className="orbit-guide-glyph" aria-hidden="true">
-            <span />
-          </span>
-          <span className="orbit-guide-label">
-            <strong>Explore the orbit</strong>
-            <small>Click orbiting models</small>
-          </span>
-        </motion.button>
-      ) : null}
-      <AnimatePresence initial={false}>
-        {isGuideOpen || activeMessage ? (
-          <motion.aside
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            aria-describedby={isGuideOpen ? undefined : "orbit-message-description"}
-            aria-label={isGuideOpen ? "How to explore the 3D models" : undefined}
-            aria-labelledby={isGuideOpen ? undefined : "orbit-message-title"}
-            className={`orbit-panel${isGuideOpen ? " orbit-panel--guide" : ""}`}
-            exit={{ opacity: 0, scale: 0.99, y: 8 }}
-            id="orbit-interaction-panel"
-            initial={{ opacity: 0, scale: 0.985, y: 14 }}
-            key="orbit-panel"
-            layout
-            transition={{
-              duration: 0.3,
-              ease: [0.22, 1, 0.36, 1],
-              layout: { duration: 0.38, ease: [0.22, 1, 0.36, 1] },
-            }}
-          >
-            <AnimatePresence initial={false} mode="wait">
-              <motion.div
-                animate={{ opacity: 1, y: 0 }}
-                className="orbit-panel-content"
-                exit={{ opacity: 0, y: -4 }}
-                initial={{ opacity: 0, y: 6 }}
-                key={
-                  isGuideOpen
-                    ? "guide"
-                    : `${selection.interactionId}-${selection.instanceId ?? "shortcut"}`
-                }
-                transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <div className="orbit-panel-header">
-                  <p className="orbit-panel-kicker">
-                    {isGuideOpen ? (
-                      "Interactive sculpture"
-                    ) : (
-                      <>
-                        <span className="orbit-panel-selection-mark" aria-hidden="true" />
-                        <span>{activeMessage.orbit}</span>
-                        <span className="orbit-panel-separator" aria-hidden="true">/</span>
-                        <span>{activeMessage.category}</span>
-                      </>
-                    )}
-                  </p>
-                  <button
-                    aria-label="Close orbit panel"
-                    className="orbit-panel-close"
-                    onClick={closePanel}
-                    type="button"
-                  >
-                    <svg aria-hidden="true" viewBox="0 0 20 20">
-                      <path d="M4 4l12 12M16 4L4 16" />
-                    </svg>
-                  </button>
-                </div>
-                {isGuideOpen ? (
-                  <div className="orbit-guide-body">
-                    <p className="orbit-guide-copy">
-                      Click a sculpture as it passes. The Ottawa Senators are my
-                      favourite team, and every player in the hockey orbit has a story.
-                      The Marvel characters share one note.
-                    </p>
-                    <div className="orbit-model-shortcuts" aria-label="Model message shortcuts">
-                      {MODEL_MESSAGE_ORDER.map((interactionId) => (
-                        <button
-                          key={interactionId}
-                          onClick={() => selectFromGuide(interactionId)}
-                          type="button"
-                        >
-                          {MODEL_MESSAGES[interactionId].title}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="orbit-message-body" aria-live="polite">
-                    <div className="orbit-message-heading">
-                      <h2 id="orbit-message-title">{activeMessage.title}</h2>
-                      <span aria-hidden="true" />
-                    </div>
-                    <div
-                      aria-label={`About ${activeMessage.title}`}
-                      className="orbit-message-scroll"
-                      role="region"
-                      tabIndex={0}
-                    >
-                      <p className="orbit-message-copy" id="orbit-message-description">
-                        {activeMessage.message}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </motion.div>
-            </AnimatePresence>
-          </motion.aside>
-        ) : null}
-      </AnimatePresence>
-      {modelState === "loading" ? (
-        <p className="orbital-model-status" aria-live="polite">
-          <span aria-hidden="true" />
-          Assembling three orbits
-        </p>
-      ) : null}
-      {modelState === "error" ? (
-        <p className="orbital-model-error">3D scene unavailable</p>
-      ) : null}
-    </>
-  );
-}
-
-function createSelectionHalo(radius, color) {
-  const group = new THREE.Group();
-  group.visible = false;
-
-  const circlePoints = (circleRadius, startAngle = 0, endAngle = TAU, segments = 96) =>
-    Array.from({ length: segments + 1 }, (_, index) => {
-      const angle =
-        startAngle + ((endAngle - startAngle) * index) / segments;
-      return new THREE.Vector3(
-        Math.cos(angle) * circleRadius,
-        Math.sin(angle) * circleRadius,
-        0,
-      );
-    });
-
-  const createLineMaterial = () =>
-    new THREE.LineBasicMaterial({
-      color,
-      transparent: true,
-      opacity: 0,
-      depthTest: false,
-      depthWrite: false,
-      toneMapped: false,
-    });
-
-  const ring = new THREE.LineLoop(
-    new THREE.BufferGeometry().setFromPoints(circlePoints(radius)),
-    createLineMaterial(),
-  );
-  const arc = new THREE.Line(
-    new THREE.BufferGeometry().setFromPoints(
-      circlePoints(radius * 1.12, -0.34, 1.38, 38),
-    ),
-    createLineMaterial(),
-  );
-  const pulse = new THREE.LineLoop(
-    new THREE.BufferGeometry().setFromPoints(circlePoints(radius * 0.92)),
-    createLineMaterial(),
-  );
-
-  ring.renderOrder = 10;
-  arc.renderOrder = 10;
-  pulse.renderOrder = 10;
-  group.add(ring, arc, pulse);
-
-  return { group, ring, arc, pulse };
-}
-
-function createDumbbellModel() {
-  const model = new THREE.Group();
-  const material = new THREE.MeshStandardMaterial({ color: SCULPTURE_PALETTE.porcelain });
-  const handle = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.085, 0.085, 1.7, 18),
-    material,
-  );
-  handle.rotation.z = Math.PI / 2;
-  model.add(handle);
-
-  const plateGeometry = new THREE.CylinderGeometry(0.34, 0.34, 0.22, 22);
-  const outerPlateGeometry = new THREE.CylinderGeometry(0.27, 0.27, 0.18, 22);
-  const collarGeometry = new THREE.CylinderGeometry(0.15, 0.15, 0.12, 18);
-
-  [
-    { geometry: collarGeometry, x: -0.53 },
-    { geometry: plateGeometry, x: -0.71 },
-    { geometry: outerPlateGeometry, x: -0.91 },
-    { geometry: collarGeometry, x: 0.53 },
-    { geometry: plateGeometry, x: 0.71 },
-    { geometry: outerPlateGeometry, x: 0.91 },
-  ].forEach(({ geometry, x }) => {
-    const piece = new THREE.Mesh(geometry, material);
-    piece.position.x = x;
-    piece.rotation.z = Math.PI / 2;
-    model.add(piece);
-  });
-
-  return model;
-}
-
-function centerAndScaleModel(model, targetSize, fit = "height") {
-  model.updateMatrixWorld(true);
-  const bounds = new THREE.Box3().setFromObject(model);
-  const size = bounds.getSize(new THREE.Vector3());
-  const center = bounds.getCenter(new THREE.Vector3());
-  const wrapper = new THREE.Group();
-  const referenceSize = fit === "max"
-    ? Math.max(size.x, size.y, size.z)
-    : size.y;
-
-  model.position.sub(center);
-  wrapper.scale.setScalar(targetSize / Math.max(referenceSize, 0.001));
-  wrapper.add(model);
-
-  return wrapper;
-}
-
-function replaceMaterials(model, material) {
-  model.traverse((child) => {
-    if (!child.isMesh) {
-      return;
-    }
-
-    const materials = Array.isArray(child.material) ? child.material : [child.material];
-    materials.forEach((existingMaterial) => existingMaterial?.dispose());
-    child.material = material;
-    child.frustumCulled = false;
-  });
-}
-
-function disposeObject(object) {
-  object.traverse((child) => {
-    if (!child.isMesh) {
-      return;
-    }
-
-    child.geometry?.dispose();
-    const materials = Array.isArray(child.material) ? child.material : [child.material];
-    materials.forEach((material) => {
-      material?.map?.dispose();
-      material?.dispose();
-    });
-  });
-}
-
-function easeOutQuint(value) {
-  return 1 - (1 - value) ** 5;
-}
-
 function SiteHeader() {
   return (
     <header className="site-header">
@@ -1196,10 +158,9 @@ function SiteHeader() {
       <nav className="site-nav" aria-label="Primary navigation">
         <a href="#professional-experience">Experience</a>
         <a href="#featured-projects">Projects</a>
-        <a href="#competitive-robotics">Robotics</a>
-        <a href="#about-leadership">About</a>
+        <a href="#leadership-skills">Leadership + skills</a>
       </nav>
-      <a className="resume-link" href="resume.pdf" download="Jeffrey_Dai_Engineering_Resume.pdf">Resume</a>
+      <a className="resume-link" href={softwareResumeUrl} download="Jeffrey_Dai_Software_Resume.pdf">Software resume <span aria-hidden="true">↗</span></a>
     </header>
   );
 }
@@ -1208,19 +169,27 @@ function Hero() {
   return (
     <section className="hero-section" id="hero" aria-labelledby="hero-title">
       <Reveal className="hero-copy">
-        <p className="section-eyebrow">McGill Computer Engineering / Montreal + Ottawa</p>
+        <p className="section-eyebrow">Software &amp; computer engineering</p>
         <h1 id="hero-title"><span>Jeffrey</span><span>Dai</span></h1>
-        <p className="hero-subtitle">I build multiplayer software, competition robots, and the less glamorous systems work that keeps both usable.</p>
+        <p className="hero-subtitle">I build real-time games and web applications. At the Canada Revenue Agency, I work on the systems behind enterprise fraud management.</p>
+        <p className="hero-education">Computer Engineering at McGill <span>Montreal / Ottawa</span></p>
         <div className="hero-actions" aria-label="Contact and profile links">
-          <ArrowLink href="resume.pdf" download="Jeffrey_Dai_Engineering_Resume.pdf">Read resume (PDF)</ArrowLink>
+          <ArrowLink href={softwareResumeUrl} download="Jeffrey_Dai_Software_Resume.pdf">Download software resume</ArrowLink>
           <ArrowLink href="mailto:jeffrey.dai@mail.mcgill.ca">Send email</ArrowLink>
-          <ArrowLink href="https://github.com/Jeffrey-dai17">GitHub</ArrowLink>
-          <ArrowLink href="https://www.linkedin.com/in/jeffrey-dai-3a9080319/">LinkedIn</ArrowLink>
+        </div>
+        <div className="hero-profiles" aria-label="Social profiles">
+          <a href="https://github.com/Jeffrey-dai17">GitHub <span aria-hidden="true">↗</span></a>
+          <a href="https://www.linkedin.com/in/jeffrey-dai-3a9080319/">LinkedIn <span aria-hidden="true">↗</span></a>
         </div>
       </Reveal>
       <Reveal className="hero-image-block">
         <div className="image-stage">
-          <OrbitalSculpture />
+          <img className="orbit-preview" src={`${import.meta.env.BASE_URL}orbit-preview.jpg`} alt="" aria-hidden="true" width="778" height="928" fetchPriority="high" />
+          <OrbitBoundary>
+            <Suspense fallback={<p className="orbital-model-status">Loading the orbit</p>}>
+              <OrbitalSculpture />
+            </Suspense>
+          </OrbitBoundary>
         </div>
       </Reveal>
     </section>
@@ -1231,20 +200,21 @@ function ProfessionalExperience() {
   return (
     <section className="page-section experience-section" id="professional-experience" aria-labelledby="professional-experience-title">
       <Reveal className="section-heading">
-        <p className="section-eyebrow">01 / Enterprise work</p>
-        <h2 id="professional-experience-title">Public-sector systems at CRA</h2>
+        <p className="section-eyebrow">Experience / May 2026-present</p>
+        <h2 id="professional-experience-title">Canada Revenue Agency</h2>
       </Reveal>
       <Reveal className="feature-row" as="article" aria-label="CRA internship and part-time continuation">
         <div className="row-meta">
-          <p className="experience-label">Internship + part-time continuation</p>
-          <h3>Enterprise Fraud Management Information Technology Branch</h3>
+          <p className="experience-label">Enterprise Fraud Management / IT Branch</p>
+          <h3>Information Technology Intern</h3>
+          <p className="experience-arrangement">Four-month internship, continuing part time at 20 hours per week.</p>
           <div className="meta-chip-row" aria-label="Public experience keywords">
-            <span>XML</span><span>Java</span><span>20 hours / week</span><span>Full-time McGill</span>
+            <span>Java</span><span>XML + JSON</span><span>Azure DevOps</span><span>Jira</span><span>SSH</span>
           </div>
         </div>
         <div className="row-copy">
-          <p>At the CRA Enterprise Fraud Management Information Technology Branch, I worked on mapping information between systems using XML and Java, contributing to enterprise-scale fraud-detection tooling.</p>
-          <p>After completing my four-month internship, I am continuing with the CRA from August 29 through December 29, working part time for 20 hours per week while studying Computer Engineering full time at McGill.</p>
+          <p>I build and maintain Java and XML information mappings for enterprise fraud-management systems, and support monitoring of database queries, fraud-detection services, and JSON-based message queues.</p>
+          <p>I develop remotely through SSH in VS Code, with Git for version control, Azure DevOps for pull requests and pipelines, and Jira for task tracking.</p>
         </div>
       </Reveal>
     </section>
@@ -1255,12 +225,12 @@ function FeaturedProjects() {
   return (
     <section className="page-section projects-section" id="featured-projects" aria-labelledby="projects-title">
       <Reveal className="section-heading">
-        <p className="section-eyebrow">02 / Selected work</p>
-        <h2 id="projects-title">Software, games, and fast builds</h2>
+        <p className="section-eyebrow">Selected projects</p>
+        <h2 id="projects-title">From shared tables to everyday tools.</h2>
       </Reveal>
       <Reveal className="project-feature project-feature--chinatown project-spotlight" as="article" aria-label="Chinatown Online project">
         <div className="project-main project-spotlight-intro">
-          <p className="project-label">Independent build / deployed on Render / 3-5 players</p>
+          <p className="project-label">React + Node.js / deployed on Render / 3-5 players</p>
           <h3>Chinatown Online</h3>
           <p className="project-role">Creator &amp; Full-Stack Developer</p>
         </div>
@@ -1275,7 +245,7 @@ function FeaturedProjects() {
 
         <div className="project-main project-spotlight-story">
           <p>I built a real-time browser adaptation of Chinatown so my friends and I could keep our board-game nights going after we left for different universities.</p>
-          <p>It turns the complete tabletop loop&mdash;dealing, private cash, open negotiation, trades, shop placement, income, and six rounds of scoring&mdash;into one shared online table.</p>
+          <p>Room codes and private player state keep the table organized, while live trading and reconnect handling support the messy reality of a multiplayer session.</p>
           <div className="project-spotlight-links" aria-label="Chinatown Online project links">
             <a className="project-spotlight-link project-spotlight-link--primary" href="https://csuboardgame.onrender.com/" target="_blank" rel="noreferrer">
               <span>Visit the live game</span>
@@ -1286,7 +256,7 @@ function FeaturedProjects() {
               <span aria-hidden="true">-&gt;</span>
             </a>
           </div>
-          <p className="project-access-note">The hosted table is password-gated for our group; the repository is public.</p>
+          <p className="project-access-note">Demo password: <code>2026CSUroom</code></p>
         </div>
 
         <div className="project-engineering" aria-label="Chinatown Online engineering highlights">
@@ -1296,29 +266,29 @@ function FeaturedProjects() {
           </div>
           <div>
             <p className="project-evidence-label">Private state &amp; resilience</p>
-            <p>Server-side access control protects the table, while browser-held reconnect tokens let players reclaim their seat after ordinary connection drops.</p>
+            <p>Private player state protects information that belongs to one player, while reconnect handling lets a session survive ordinary connection drops.</p>
           </div>
           <div>
             <p className="project-evidence-label">Tested multiplayer flow</p>
-            <p>Vitest covers the game rules, and a Playwright smoke test drives three isolated players through dealing, a trade, placement, income, and the next round.</p>
+            <p>Automated end-to-end smoke tests exercise the multiplayer flow so changes can be checked against a real browser session.</p>
           </div>
         </div>
 
         <dl className="project-skill-ledger">
           <div>
             <dt>Technology</dt>
-            <dd>React / JavaScript / Node.js / Express / Socket.IO / Vite / Vitest / Playwright / Render</dd>
+            <dd>React / JavaScript / Node.js / Express / Socket.IO / Vite / Render</dd>
           </div>
           <div>
             <dt>Skills demonstrated</dt>
-            <dd>Real-time systems / game-state modeling / authentication / reconnect handling / responsive UI / unit and end-to-end testing</dd>
+            <dd>Server-authoritative state / real-time multiplayer / private player data / reconnect handling / end-to-end testing</dd>
           </div>
         </dl>
       </Reveal>
 
       <Reveal className="project-feature" as="article" aria-label="Dishly Recipe Match project">
         <div className="project-main">
-          <p className="project-label">Lead project - CUhacking, 36 hours</p>
+          <p className="project-label">CUhacking / 36-hour build</p>
           <h3>Dishly Recipe Match</h3>
           <p className="project-role">Full-Stack Developer</p>
           <p>I helped build a full-stack AI recipe-matching app that turns natural-language cravings into dietary and nutrition filters, fetches normalized recipe results, and presents them in a swipeable deck.</p>
@@ -1337,8 +307,8 @@ function FeaturedProjects() {
       <div className="subsection-grid">
         <section className="compact-block" aria-labelledby="hackathon-grid-title">
           <Reveal className="compact-heading">
-            <p className="project-label">Hackathon grid</p>
-            <h3 id="hackathon-grid-title">More 24-48 hour builds</h3>
+            <p className="project-label">Additional hackathons</p>
+            <h3 id="hackathon-grid-title">Built with a team, against the clock.</h3>
           </Reveal>
           <div className="feed-list">
             {hackathonProjects.map((project) => (
@@ -1354,8 +324,8 @@ function FeaturedProjects() {
 
         <Reveal className="compact-block hardware-block" as="section" aria-labelledby="hardware-builds-title">
           <div className="compact-heading">
-            <p className="project-label">Hardware builds</p>
-            <h3 id="hardware-builds-title">Secondary engineering builds</h3>
+            <p className="project-label">Arduino / stepper motors / 3D printing</p>
+            <h3 id="hardware-builds-title">Claw Machine</h3>
           </div>
           <ul className="hardware-list">
             {hardwareBuilds.map((build) => <li key={build}>{build}</li>)}
@@ -1366,68 +336,40 @@ function FeaturedProjects() {
   );
 }
 
-function CompetitiveRobotics() {
+function LeadershipSkills() {
   return (
-    <section className="page-section robotics-section" id="competitive-robotics" aria-labelledby="robotics-title">
+    <section className="page-section about-section" id="leadership-skills" aria-labelledby="leadership-skills-title">
       <Reveal className="section-heading">
-        <p className="section-eyebrow">03 / Competitive robotics</p>
-        <h2 id="robotics-title">Built for competition day, not the demo.</h2>
-      </Reveal>
-      <div className="robotics-layout">
-        <Reveal className="feature-row robotics-main" as="article">
-          <div className="row-meta">
-            <p className="project-label">FIRST Team 8729 / Sparkling H2O / 2022-2025</p>
-            <h3>Drive team and mechanical sub-team</h3>
-          </div>
-          <div className="row-copy">
-            <p>I competed as a Drive Team Member and Mechanical Sub-team Member on FIRST Robotics Team 8729. In that high-pressure team environment, we reached two provincial finals and the 2023 World Championship.</p>
-            <p>I also led small sub-teams, pairing competition-day execution with hands-on engineering delivery.</p>
-          </div>
-        </Reveal>
-        <aside className="results-list" aria-label="Robotics highlights">
-          {roboticsHighlights.map((highlight) => <Reveal className="result-row" key={highlight}>{highlight}</Reveal>)}
-        </aside>
-      </div>
-      <Reveal className="skill-strip" aria-label="Supporting mechanical skills">
-        <p className="project-label">Supporting engineering skills</p>
-        <div className="robotics-skill-list">
-          {roboticsSkills.map((skill) => <span key={skill}>{skill}</span>)}
-        </div>
-      </Reveal>
-    </section>
-  );
-}
-
-function AboutLeadership() {
-  return (
-    <section className="page-section about-section" id="about-leadership" aria-labelledby="about-title">
-      <Reveal className="section-heading">
-        <p className="section-eyebrow">04 / About &amp; leadership</p>
-        <h2 id="about-title">Teams taught me how to build in public.</h2>
+        <p className="section-eyebrow">Leadership + skills</p>
+        <h2 id="leadership-skills-title">Workshops, teams, and a working toolkit.</h2>
       </Reveal>
       <div className="about-grid">
         <Reveal className="leadership-block primary-leadership-block" as="article">
           <p className="project-label">2025-present</p>
           <h3>McHacks Experience Team Lead</h3>
-          <p>At McGill's largest hackathon, I lead experience work for an event with 700 participants across 1,500+ applications.</p>
+          <p>I lead a team supporting a hackathon with 700 participants selected from more than 1,500 applications.</p>
           <ul>
-            <li>I led a team that organized and ran workshops on backend and frontend development and adding AI chatbots to projects.</li>
-            <li>I coordinated workshops with companies including Athena AI and Gumloop, organized team socials, and helped review McHacks applications.</li>
+            <li>Organize backend, frontend, and AI chatbot workshops.</li>
+            <li>Coordinate sessions with external partners.</li>
           </ul>
         </Reveal>
-        <Reveal className="leadership-block chem-block" as="article">
-          <p className="project-label">2025-present</p>
-          <h3>McGill Chem-E Car</h3>
-          <p>I am an electrical sub-team member.</p>
-          <div className="keyword-list" aria-label="Chem-E Car skills">
-            {chemECarSkills.map((skill) => <span key={skill}>{skill}</span>)}
-          </div>
+        <Reveal className="leadership-block skills-ledger" as="article">
+          <p className="project-label">Working toolkit</p>
+          <h3>Across software and hardware</h3>
+          <dl className="project-skill-ledger">
+            {skillGroups.map((group) => (
+              <div key={group.label}>
+                <dt>{group.label}</dt>
+                <dd>{group.items}</dd>
+              </div>
+            ))}
+          </dl>
         </Reveal>
       </div>
       <Reveal className="mindset-block" as="article">
-        <p className="project-label">The Engineer's Mindset</p>
-        <h3>Measured, iterative, and a little optimization-minded.</h3>
-        <p>Outside class and projects, I bring the same analytical habits to tracking my fitness macronutrients and designing highly optimized, automated resource systems in Minecraft.</p>
+        <p className="project-label">Education</p>
+        <h3>McGill University</h3>
+        <p>Bachelor of Engineering in Computer Engineering, expected April 2029. CGPA: 3.89 / 4.00. Fluent in English and advanced in French.</p>
       </Reveal>
     </section>
   );
@@ -1447,7 +389,7 @@ function SiteFooter() {
       <div className="footer-meta">
         <p>Jeffrey Dai / Computer Engineering</p>
         <nav aria-label="Footer navigation">
-          <a href="resume.pdf" download="Jeffrey_Dai_Engineering_Resume.pdf">Resume</a>
+          <a href={softwareResumeUrl} download="Jeffrey_Dai_Software_Resume.pdf">Software resume</a>
           <a href="https://github.com/Jeffrey-dai17">GitHub</a>
           <a href="https://www.linkedin.com/in/jeffrey-dai-3a9080319/">LinkedIn</a>
           <a href="#hero">Back to top</a>
@@ -1466,8 +408,7 @@ function App() {
         <Hero />
         <ProfessionalExperience />
         <FeaturedProjects />
-        <CompetitiveRobotics />
-        <AboutLeadership />
+        <LeadershipSkills />
       </main>
       <SiteFooter />
     </MotionConfig>

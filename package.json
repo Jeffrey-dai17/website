@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/resume.mjs prepare",
     "build": "vite build",
+    "postbuild": "node scripts/resume.mjs verify",
     "preview": "vite preview",
     "lint": "eslint .",
     "optimize-models": "node scripts/optimize-models.mjs"

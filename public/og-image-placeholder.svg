@@ -1,28 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
-  <title id="title">Jeffrey Dai computer engineering portfolio</title>
-  <desc id="desc">An editorial cream and black portfolio card with Jeffrey Dai's name and an orbital engineering illustration.</desc>
-  <rect width="1200" height="630" fill="#f0e9dd"/>
-  <rect x="620" width="580" height="630" fill="#0a0d0b"/>
-  <line x1="620" y1="0" x2="620" y2="630" stroke="#9d4837" stroke-width="4"/>
-
-  <text x="72" y="82" fill="#9d4837" font-family="IBM Plex Mono, Consolas, monospace" font-size="18" font-weight="600" letter-spacing="2">COMPUTER ENGINEERING / MCGILL</text>
-  <text x="70" y="255" fill="#181b18" font-family="Georgia, Times New Roman, serif" font-size="126" font-weight="400" letter-spacing="-7">Jeffrey</text>
-  <text x="202" y="376" fill="#181b18" font-family="Georgia, Times New Roman, serif" font-size="132" font-style="italic" font-weight="400" letter-spacing="-7">Dai</text>
-  <line x1="72" y1="454" x2="548" y2="454" stroke="#a79d90"/>
-  <text x="72" y="498" fill="#5f5a52" font-family="Arial, sans-serif" font-size="24" font-weight="600">SOFTWARE / ROBOTICS / PHYSICAL SYSTEMS</text>
-  <text x="72" y="552" fill="#5f5a52" font-family="Arial, sans-serif" font-size="20">Projects made to work beyond the demo.</text>
-
-  <g transform="translate(910 315)" fill="none">
-    <circle r="212" stroke="#4b504a" stroke-width="2"/>
-    <circle r="150" stroke="#4b504a" stroke-width="2"/>
-    <circle r="88" stroke="#4b504a" stroke-width="2"/>
-    <path d="M0-36v94M-20 20h40M0 58l-26 54M0 58l27 54" stroke="#f0e9dd" stroke-width="8" stroke-linecap="square"/>
-    <circle cy="-68" r="24" fill="#f0e9dd" stroke="none"/>
-    <circle cx="-146" cy="-154" r="16" fill="#79b7a3" stroke="none"/>
-    <rect x="142" y="-84" width="28" height="28" fill="#d0a84f" stroke="none" transform="rotate(18 156 -70)"/>
-    <circle cx="-205" cy="54" r="13" fill="#9d4837" stroke="none"/>
-    <path d="M108 120h54v28h-54z" fill="#f0e9dd" stroke="none"/>
-    <path d="M-70 126l25 44h-50z" fill="#79b7a3" stroke="none"/>
-  </g>
-  <text x="1118" y="590" fill="#9c9489" font-family="IBM Plex Mono, Consolas, monospace" font-size="16" text-anchor="end">PORTFOLIO / 2026</text>
+  <title id="title">Jeffrey Dai - Software and Computer Engineering</title>
+  <desc id="desc">Jeffrey Dai's portfolio, with a cream and vermilion nameplate beside his interactive 3D portrait.</desc>
+  <rect width="1200" height="630" fill="#f2eadc"/>
+  <rect x="660" width="540" height="630" fill="#171512"/>
+  <image href="orbit-preview.jpg" x="660" y="0" width="540" height="630" preserveAspectRatio="xMidYMid meet"/>
+  <line x1="660" y1="0" x2="660" y2="630" stroke="#171512" stroke-width="2"/>
+  <text x="55" y="72" fill="#ad3326" font-family="IBM Plex Mono, Consolas, monospace" font-size="15" font-weight="500" letter-spacing="1">SOFTWARE &amp; COMPUTER ENGINEERING</text>
+  <text x="48" y="258" fill="#171512" font-family="Familjen Grotesk, Arial, sans-serif" font-size="133" font-weight="700" letter-spacing="-9">JEFFREY</text>
+  <text x="118" y="409" fill="#ad3326" font-family="Newsreader, Georgia, serif" font-size="182" font-style="italic" font-weight="400" letter-spacing="-11">Dai</text>
+  <line x1="55" y1="477" x2="605" y2="477" stroke="#c8bba8"/>
+  <text x="55" y="524" fill="#171512" font-family="Familjen Grotesk, Arial, sans-serif" font-size="25" font-weight="400">Real-time games. Web applications.</text>
+  <text x="55" y="563" fill="#695f53" font-family="Familjen Grotesk, Arial, sans-serif" font-size="20">Computer Engineering at McGill</text>
+  <text x="55" y="599" fill="#695f53" font-family="IBM Plex Mono, Consolas, monospace" font-size="12" font-weight="500" letter-spacing="1">JEFFREY-DAI17.GITHUB.IO/WEBSITE</text>
 </svg>
