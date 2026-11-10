@@ -1217,6 +1217,16 @@ button:focus-visible,
   border-top: 0;
 }
 
+.project-destination-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: inherit;
+  padding: inherit;
+}
+
 .stack-panel {
   display: grid;
   align-content: start;

@@ -127,25 +127,31 @@ function ProjectLinkSwitcher({ links, projectName, switcherId }) {
         })}
       </div>
       <div className="project-link-stage">
-        <AnimatePresence initial={false} custom={direction}>
-          <motion.a
-            className="project-destination-link"
-            href={activeLink.href}
-            target="_blank"
-            rel="noreferrer"
-            aria-label={`${activeLink.linkLabel} (opens in a new tab)`}
-            key={activeLink.id}
-            custom={direction}
-            variants={projectLinkMotion}
-            initial={shouldReduceMotion ? false : "enter"}
-            animate="active"
-            exit="exit"
-            transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <span>{activeLink.linkLabel}</span>
-            <span className="project-destination-arrow" aria-hidden="true">-&gt;</span>
-          </motion.a>
-        </AnimatePresence>
+        {/* Keep the interactive destination current while only its visual copy exits. */}
+        <a
+          className="project-destination-link"
+          href={activeLink.href}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={`${activeLink.linkLabel} (opens in a new tab)`}
+        >
+          <AnimatePresence initial={false} custom={direction}>
+            <motion.span
+              className="project-destination-content"
+              aria-hidden="true"
+              key={activeLink.id}
+              custom={direction}
+              variants={projectLinkMotion}
+              initial={shouldReduceMotion ? false : "enter"}
+              animate="active"
+              exit="exit"
+              transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <span>{activeLink.linkLabel}</span>
+              <span className="project-destination-arrow" aria-hidden="true">-&gt;</span>
+            </motion.span>
+          </AnimatePresence>
+        </a>
       </div>
     </div>
   );
